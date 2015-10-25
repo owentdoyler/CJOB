@@ -1,7 +1,11 @@
 package cjob.android.owendoyle.com.cjob;
 
+import android.content.ContentValues;
+import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,21 +23,30 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.HashMap;
 
+import cjob.android.owendoyle.com.cjob.EventsDbSchema.EventsTable;
+
 /**
- * Created by Owen on 22/10/2015.
+ * Name: Owen Doyle
+ * Student Number: 12453618
+ * File: MapFragment.java
  */
 public class MapFragment extends SupportMapFragment {
     private static final String TAG = "MapFragment";
+
+    public static final String EXTRA_LATITUDE = "com.latitude"; //TODO change this string
+    public static final String EXTRA_LONGITUDE = "com.longitude"; //TODO change this string
 
     private HashMap<Marker, Boolean> mMarkerEvents = new HashMap<>();
     private GoogleApiClient mClient;
     private GoogleMap mMap;
     private Location mLastLocation;
     private Marker mSelectedMarker = null;
+    private SQLiteDatabase mDataBase;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setHasOptionsMenu(true);
         setupClient();
         setUpMap();
@@ -61,6 +74,7 @@ public class MapFragment extends SupportMapFragment {
                 mMarkerEvents.remove(mSelectedMarker);
                 mSelectedMarker = null;
                 getActivity().invalidateOptionsMenu();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
