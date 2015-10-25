@@ -18,6 +18,8 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 
+import cjob.android.owendoyle.com.cjob.events.EventManager;
+
 /**
  * Name: Owen Doyle
  * Student Number: 12453618

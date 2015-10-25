@@ -1,11 +1,8 @@
 package cjob.android.owendoyle.com.cjob;
 
-import android.content.ContentValues;
-import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,8 +19,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.HashMap;
-
-import cjob.android.owendoyle.com.cjob.EventsDbSchema.EventsTable;
 
 /**
  * Name: Owen Doyle

@@ -1,7 +1,6 @@
-package cjob.android.owendoyle.com.cjob;
+package cjob.android.owendoyle.com.cjob.events;
 
 import android.app.NotificationManager;
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -9,7 +8,10 @@ import android.location.Location;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import cjob.android.owendoyle.com.cjob.EventsDbSchema.EventsTable;
+import cjob.android.owendoyle.com.cjob.database.EventCursorWrapper;
+import cjob.android.owendoyle.com.cjob.database.EventsDatabaseHelper;
+import cjob.android.owendoyle.com.cjob.database.EventsDbSchema.EventsTable;
+import cjob.android.owendoyle.com.cjob.R;
 
 /**
  * Name: Owen Doyle

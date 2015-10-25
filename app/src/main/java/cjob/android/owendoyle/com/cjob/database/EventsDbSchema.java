@@ -1,4 +1,4 @@
-package cjob.android.owendoyle.com.cjob;
+package cjob.android.owendoyle.com.cjob.database;
 
 /**
  * Name: Owen Doyle
