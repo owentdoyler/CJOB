@@ -103,7 +103,7 @@ public class MapFragment extends SupportMapFragment {
                 mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
                     @Override
                     public void onMapLongClick(LatLng latLng) {
-                        Marker newMarker = mMap.addMarker(new MarkerOptions().position(latLng).title("TODO: ADD PLACE ADDRESS")); //TODO add place address/event details
+                        Marker newMarker = mMap.addMarker(new MarkerOptions().position(latLng).title("Click the + to add an event")); //TODO add place address/event details
                         //store a reference to the new marker
                         mMarkerEvents.put(newMarker, false);
 
