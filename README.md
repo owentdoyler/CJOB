@@ -1,4 +1,4 @@
-##Running the Project
+##To be able to run the project
 
 1. Go to the command line.
 2. Navigate to the root folder of the project.
