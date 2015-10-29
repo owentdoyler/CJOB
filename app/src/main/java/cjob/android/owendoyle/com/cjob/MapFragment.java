@@ -1,5 +1,6 @@
 package cjob.android.owendoyle.com.cjob;
 
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.os.Bundle;
@@ -30,6 +31,7 @@ public class MapFragment extends SupportMapFragment {
 
     public static final String EXTRA_LATITUDE = "com.latitude"; //TODO change this string
     public static final String EXTRA_LONGITUDE = "com.longitude"; //TODO change this string
+    public static final String EXTRA_ADDRESS = "com.address";
 
     private HashMap<Marker, Boolean> mMarkerEvents = new HashMap<>();
     private GoogleApiClient mClient;
@@ -69,6 +71,10 @@ public class MapFragment extends SupportMapFragment {
                 mMarkerEvents.remove(mSelectedMarker);
                 mSelectedMarker = null;
                 getActivity().invalidateOptionsMenu();
+                return true;
+            case R.id.action_add_event:
+                Intent intent = EventTypeActivity.newIntent(getActivity(), mSelectedMarker.getPosition().latitude, mSelectedMarker.getPosition().longitude,"address");
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
