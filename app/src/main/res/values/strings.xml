@@ -4,4 +4,17 @@
     <string name="action_event_details">Event Details</string>
     <string name="action_delete_marker">Delete Marker</string>
     <string name="action_add_event">Add Event</string>
+    <string name="event_title_hint">Enter a title for the event.</string>
+    <string name="choose_contact_text">Choose contact</string>
+    <string name="choose_radius_text">Set radius:</string>
+    <string name="event_title_heading">Title</string>
+    <string name="event_message_hint">Enter your message here...</string>
+    <string name="event_message_title">Message</string>
+    <string name="event_email_to">To</string>
+    <string name="event_email_to_hint">Email address</string>
+    <string name="event_email_sub">Subject</string>
+    <string name="event_email_sub_hint">Email subject</string>
+    <string name="event_email_body">Body</string>
+    <string name="event_email_body_hint">Enter email content here...</string>
+    <string name="event_delete_on_complete">Delete on complete</string>
 </resources>
