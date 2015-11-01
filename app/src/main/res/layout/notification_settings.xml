@@ -33,7 +33,8 @@
             android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/choose_radius_text"/>
+            android:text="@string/choose_radius_text"
+            />
 
         <TextView
             android:id="@+id/seekbar_progress_text_view"
@@ -57,6 +58,28 @@
         android:minHeight="3dp"
         />
 
+    <TextView
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/event_message_title"/>
+
+    <EditText android:id="@+id/event_text_message"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:inputType="textMultiLine"
+              android:lines="8"
+              android:gravity="top|left"
+              android:layout_marginLeft="16dp"
+              android:layout_marginRight="16dp"
+              android:padding="4dp"
+              android:hint="@string/event_message_hint"
+              android:background="@drawable/text_area_background"
+        />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -70,7 +93,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/event_delete_on_complete"/>
-        
+
+
+
         <CheckBox
             android:id="@+id/event_delete_on_complete"
             android:layout_width="wrap_content"
@@ -79,6 +104,8 @@
             android:checked="true"/>
 
     </LinearLayout>
+
+
 
 
 </LinearLayout>

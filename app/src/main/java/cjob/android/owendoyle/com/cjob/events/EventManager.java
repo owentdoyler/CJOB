@@ -1,6 +1,7 @@
 package cjob.android.owendoyle.com.cjob.events;
 
 import android.app.NotificationManager;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -10,6 +11,7 @@ import android.util.Log;
 
 import cjob.android.owendoyle.com.cjob.database.EventCursorWrapper;
 import cjob.android.owendoyle.com.cjob.database.EventsDatabaseHelper;
+import cjob.android.owendoyle.com.cjob.database.EventsDbSchema;
 import cjob.android.owendoyle.com.cjob.database.EventsDbSchema.EventsTable;
 import cjob.android.owendoyle.com.cjob.R;
 
@@ -24,10 +26,11 @@ public class EventManager {
     private static final String TAG = "EventManager";
 
     //types of events
-    public static final String NOTIFICATION = "notification";
-    public static final String ALARM = "alarmm";
-    public static final String EMAIL = "email";
-    public static final String SMS = "sms";
+    public static final int ALARM = 1;
+    public static final int SMS = 2;
+    public static final int NOTIFICATION = 3;
+    public static final int EMAIL = 4;
+
 
     //basic layout of a SQLite where clause
     private static final String WHERE_CLAUSE = EventsTable.Cols.LAT+ " =? AND " +EventsTable.Cols.LONG+ "=?";
@@ -40,6 +43,45 @@ public class EventManager {
         //get reference to the database
         mDataBase = new EventsDatabaseHelper(mContext.getApplicationContext()).getWritableDatabase();
     }
+
+    private static ContentValues getContentValues(Event event){
+        ContentValues values = new ContentValues();
+        values.put(EventsTable.Cols.LAT,event.getLatitude().toString());
+        values.put(EventsTable.Cols.LONG,event.getLongitude().toString());
+        values.put(EventsTable.Cols.RADIUS,Integer.toString(event.getRadius()));
+        values.put(EventsTable.Cols.ADDRESS,event.getAddress());
+        values.put(EventsTable.Cols.TITLE,event.getTitle());
+        values.put(EventsTable.Cols.EVENT_TYPE,event.getType());
+        values.put(EventsTable.Cols.EVENT_TITLE,event.getTitle());
+        values.put(EventsTable.Cols.DELETE_ON_COMPLETE,event.getDeleteOnComplete());
+        values.put(EventsTable.Cols.EVENT_TEXT,event.getText());
+        values.put(EventsTable.Cols.TITLE,event.getTitle());
+        values.put(EventsTable.Cols.CONTACT,event.getContact());
+        values.put(EventsTable.Cols.CONTACT_NUMBER,event.getContactNumber());
+        values.put(EventsTable.Cols.EMAIL_ADDRESS,event.getEmail());
+        values.put(EventsTable.Cols.EMAIL_SUBJECT,event.getEmailSubject());
+
+        return values;
+    }
+
+    public void addEvent(Event event){
+        ContentValues values = getContentValues(event);
+        mDataBase.insert(EventsTable.NAME, null, values);
+    }
+
+    public void logEvents(){
+        EventCursorWrapper cursor = queryEvents(null,null);
+        try {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                Log.d(TAG,cursor.getEventDetails().toString());
+                cursor.moveToNext();
+            }
+        } finally {
+            cursor.close();
+        }
+    }
+
 
     public void checkForEvents(Location location){
         //query the data base for any events that are set for the given location
@@ -63,7 +105,7 @@ public class EventManager {
     }
 
     private void performEvent(Event event){
-        switch (event.getType()){
+        switch (Integer.parseInt(event.getType())){
             case NOTIFICATION:
                 sendNotification(event);
                 return;

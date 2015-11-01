@@ -17,4 +17,8 @@
     <string name="event_email_body">Body</string>
     <string name="event_email_body_hint">Enter email content here...</string>
     <string name="event_delete_on_complete">Delete on complete</string>
+    <string name="event_create_event">Ceate event</string>
+    <string name="event_settings_label">Event Settings</string>
+    <string name="event_created_toast">Event created</string>
+    <string name="event_empty_fields_toast">Pleas fill in all fields!</string>
 </resources>

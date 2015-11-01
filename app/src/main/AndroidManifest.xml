@@ -24,8 +24,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".EventTypeActivity"></activity>
+        <activity android:name=".EventTypeActivity"
+            android:launchMode="singleTop"></activity>
         <activity android:name=".SettingsActivity"
+                  android:parentActivityName=".EventTypeActivity"
+                  android:label="@string/event_settings_label"
                   android:windowSoftInputMode="stateHidden">
 
         </activity>

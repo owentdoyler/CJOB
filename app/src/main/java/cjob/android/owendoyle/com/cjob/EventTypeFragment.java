@@ -15,6 +15,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import cjob.android.owendoyle.com.cjob.events.EventManager;
+
 /**
  * Created by Owner on 28/10/2015.
  */
@@ -119,19 +121,19 @@ public class EventTypeFragment extends Fragment {
 
                 if(type == "Alarm") {
                     eventIcon = R.drawable.ic_alarm;
-                    eventId = 1;
+                    eventId = EventManager.ALARM;
                 }
                 else if(type == "Send SMS") {
                     eventIcon = R.drawable.ic_sms_icon;
-                    eventId = 2;
+                    eventId = EventManager.SMS;
                 }
                 else if (type =="Push Notification") {
                     eventIcon = R.drawable.ic_speaker_icon;
-                    eventId = 3;
+                    eventId = EventManager.NOTIFICATION;
                 }
                 else if( type == "Send Email") {
                     eventIcon = R.drawable.ic_gmail_icon;
-                    eventId = 4;
+                    eventId = EventManager.EMAIL;
                 }
                 else {
                     eventIcon = R.drawable.ic_speaker_icon;

@@ -8,7 +8,11 @@ import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -17,12 +21,17 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import cjob.android.owendoyle.com.cjob.events.Event;
+import cjob.android.owendoyle.com.cjob.events.EventManager;
 
 /**
  * Created by Owner on 30/10/2015.
  */
 public class SettingsFragment extends Fragment {
 
+    private static final String TAG = "SettingsFragment";
     private static final String ARG_LATITUDE = "latitude";
     private static final String ARG_LONGITUDE = "longitude";
     private static final String ARG_ADDRESS = "address";
@@ -38,6 +47,9 @@ public class SettingsFragment extends Fragment {
     private int event_radius = 10;
     private boolean deleteOnComplete = true;
 
+    private Event newEvent = new Event();
+    private EventManager mEventManager;
+
     private SeekBar mRadiusBar;
     private TextView mRadiusBarProgress;
     private EditText mEventTitle;
@@ -46,23 +58,29 @@ public class SettingsFragment extends Fragment {
     private EditText mEmailSubject;
     private EditText mTextMessage;
     private CheckBox mDeleteOnComplete;
-    private TextView mDebugText;
 
     @Override
     public void onCreate(Bundle savedInsatnceState) {
         super.onCreate(savedInsatnceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-        if(getArguments().get(ARG_EVENT_TYPE) == 1){
+        mEventManager = new EventManager(getActivity());
+        newEvent.setLatitude(getArguments().getDouble(ARG_LATITUDE));
+        newEvent.setLongitude(getArguments().getDouble(ARG_LONGITUDE));
+        newEvent.setAddress(getArguments().getString(ARG_ADDRESS));
+        newEvent.setType(Integer.toString(getArguments().getInt(ARG_EVENT_TYPE)));
+
+        if(getArguments().get(ARG_EVENT_TYPE) == EventManager.ALARM){
             View v = inflater.inflate(R.layout.alarm_settings,container,false);
             editTitle(v);
             radiusPicker(v);
             deleteOnCompleteCheck(v);
             return v;
         }
-        else if(getArguments().get(ARG_EVENT_TYPE) == 2){
+        else if(getArguments().get(ARG_EVENT_TYPE) == EventManager.SMS){
             View v = inflater.inflate(R.layout.sms_settings,container,false);
             editTitle(v);
             radiusPicker(v);
@@ -71,10 +89,11 @@ public class SettingsFragment extends Fragment {
             deleteOnCompleteCheck(v);
             return v;
         }
-        else if(getArguments().get(ARG_EVENT_TYPE) == 3){
-            View v = inflater.inflate(R.layout.alarm_settings,container,false);
+        else if(getArguments().get(ARG_EVENT_TYPE) == EventManager.NOTIFICATION){
+            View v = inflater.inflate(R.layout.notification_settings,container,false);
             editTitle(v);
             radiusPicker(v);
+            textMessage(v);
             deleteOnCompleteCheck(v);
             return v;
         }
@@ -82,12 +101,52 @@ public class SettingsFragment extends Fragment {
             View v = inflater.inflate(R.layout.email_settings,container,false);
             editTitle(v);
             radiusPicker(v);
-            emailToFrom(v);
+            emailToSubject(v);
             textMessage(v);
             deleteOnCompleteCheck(v);
             return v;
         }
 
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_settings_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_item_new_crime:
+                    if(getArguments().get(ARG_EVENT_TYPE) == EventManager.ALARM && newEvent.getTitle() != null && newEvent.getTitle() != ""){
+                       createEvent();
+                    }
+                    else if(getArguments().get(ARG_EVENT_TYPE) == EventManager.SMS && completeSmsEvent()){
+                       createEvent();
+                    }
+                    else if(getArguments().get(ARG_EVENT_TYPE) == EventManager.NOTIFICATION && completeNotificationEvent()){
+                        createEvent();
+                    }
+                    else if(getArguments().get(ARG_EVENT_TYPE) == EventManager.EMAIL && completeEmailEvent()){
+                       createEvent();
+                    }
+                    else{
+                        Toast.makeText(getActivity(),R.string.event_empty_fields_toast,Toast.LENGTH_SHORT).show();
+                    }
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void createEvent(){
+        mEventManager.addEvent(newEvent);
+        mEventManager.logEvents();
+        Toast.makeText(getActivity(),R.string.event_created_toast,Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getActivity(),MapActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
     public static SettingsFragment newInstance(double latitude, double longitude, String address, int event_type) {
@@ -112,6 +171,7 @@ public class SettingsFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                newEvent.setTitle(charSequence.toString());
                 event_title = charSequence.toString();
             }
 
@@ -134,6 +194,7 @@ public class SettingsFragment extends Fragment {
                     i = 1;
                 }
                 mRadiusBarProgress.setText("" + i * 10 + "m");
+                newEvent.setRadius(i * 10);
             }
 
             @Override
@@ -159,7 +220,7 @@ public class SettingsFragment extends Fragment {
         });
     }
 
-    private void emailToFrom(View v){
+    private void emailToSubject(View v){
         mEmailTo = (EditText) v.findViewById(R.id.event_email_to);
         mEmailSubject = (EditText) v.findViewById(R.id.event_email_subject);
         mEmailTo.addTextChangedListener(new TextWatcher() {
@@ -171,6 +232,7 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 email_to = charSequence.toString();
+                newEvent.setEmail(charSequence.toString());
             }
 
             @Override
@@ -188,6 +250,7 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 email_subject = charSequence.toString();
+                newEvent.setEmailSubject(charSequence.toString());
             }
 
             @Override
@@ -208,6 +271,7 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 text_message = charSequence.toString();
+                newEvent.setText(charSequence.toString());
             }
 
             @Override
@@ -223,6 +287,12 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 deleteOnComplete = b;
+                if (b) {
+                    newEvent.setDeleteOnComplete(1);
+                } else {
+                    newEvent.setDeleteOnComplete(0);
+                }
+
             }
         });
     }
@@ -259,6 +329,8 @@ public class SettingsFragment extends Fragment {
                             mChooseContactButton.setText(reciever + ": " + number);
                             contact_name = reciever;
                             cotact_number = number;
+                            newEvent.setContact(reciever);
+                            newEvent.setContactNumber(number);
                             break;
                         case ContactsContract.CommonDataKinds.Phone.TYPE_WORK:
                             // do something with the Work number here...
@@ -272,6 +344,37 @@ public class SettingsFragment extends Fragment {
                 c.close();
             }
         }
+    }
+
+    private boolean completeSmsEvent(){
+        if(newEvent.getTitle() != null && newEvent.getTitle() != ""
+                && newEvent.getContact() != null && newEvent.getContact() != ""
+                && newEvent.getContactNumber() != null && newEvent.getContactNumber() != ""
+                && newEvent.getText() != null && newEvent.getText() != ""){
+            return true;
+        }
+        else
+            return false;
+    }
+
+    private boolean completeEmailEvent(){
+        if(newEvent.getTitle() != null && newEvent.getTitle() != ""
+                && newEvent.getEmail() != null && newEvent.getEmail() != ""
+                && newEvent.getEmailSubject() != null && newEvent.getEmailSubject() != ""
+                && newEvent.getText() != null && newEvent.getText() != ""){
+            return true;
+        }
+        else
+            return false;
+    }
+
+    private boolean completeNotificationEvent(){
+        if(newEvent.getTitle() != null && newEvent.getTitle() != ""
+                && newEvent.getText() != null && newEvent.getText() != ""){
+            return true;
+        }
+        else
+            return false;
     }
 
 }

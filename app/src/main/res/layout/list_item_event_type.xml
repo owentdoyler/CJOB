@@ -6,8 +6,6 @@
     android:layout_height="match_parent"
     >
 
-
-
     <ImageView
         android:id="@+id/list_item_event_type_image"
         android:layout_width="70dp"

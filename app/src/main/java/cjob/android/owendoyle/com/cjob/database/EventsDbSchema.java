@@ -22,7 +22,9 @@ public class EventsDbSchema {
             public static final String DELETE_ON_COMPLETE = "delete_on_complete";
             public static final String EVENT_TEXT = "event_text";
             public static final String CONTACT = "contact";
+            public static final String CONTACT_NUMBER = "contact_number";
             public static final String EMAIL_ADDRESS = "email_address";
+            public static final String EMAIL_SUBJECT = "email_subject";
         }
     }
 }
