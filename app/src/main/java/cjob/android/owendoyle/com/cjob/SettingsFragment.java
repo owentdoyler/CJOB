@@ -118,7 +118,7 @@ public class SettingsFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_item_new_crime:
+            case R.id.menu_item_create_event:
                     if(getArguments().get(ARG_EVENT_TYPE) == EventManager.ALARM && newEvent.getTitle() != null && newEvent.getTitle() != ""){
                        createEvent();
                     }
