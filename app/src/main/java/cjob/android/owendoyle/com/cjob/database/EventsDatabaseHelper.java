@@ -33,7 +33,9 @@ public class EventsDatabaseHelper extends SQLiteOpenHelper {
                 EventsDbSchema.EventsTable.Cols.DELETE_ON_COMPLETE+" INTEGER, "+
                 EventsDbSchema.EventsTable.Cols.EVENT_TEXT + ", "+
                 EventsDbSchema.EventsTable.Cols.CONTACT + ", "+
-                EventsDbSchema.EventsTable.Cols.EMAIL_ADDRESS+
+                EventsDbSchema.EventsTable.Cols.CONTACT_NUMBER + ", "+
+                EventsDbSchema.EventsTable.Cols.EMAIL_ADDRESS + ", "+
+                EventsDbSchema.EventsTable.Cols.EMAIL_SUBJECT +
                         ")"
         );
     }

@@ -8,13 +8,65 @@ package cjob.android.owendoyle.com.cjob.events;
  * This is a class to hold the information about an event
  */
 public class Event {
+
+    private Double latitude;
+    private Double longitude;
+    private int radius;
+    private String address;
     private String mType;
     private String mTitle;
     private String mText;
     private String mContact;
+    private String mContactNumber;
     private String mEmail;
+    private String mEmailSubject;
     private int mDeleteOnComplete;
 
+    public Event(){
+        latitude = null;
+        longitude = null;
+        radius = 10;
+        address = null;
+        mType = null;
+        mTitle = null;
+        mText = null;
+        mContact = null;
+        mContactNumber = null;
+        mEmail = null;
+        mEmailSubject = null;
+        mDeleteOnComplete = 1;
+    }
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
+    public int getRadius() {
+        return radius;
+    }
+
+    public void setRadius(int radius) {
+        this.radius = radius;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
     public String getTitle() {
         return mTitle;
@@ -36,12 +88,28 @@ public class Event {
         this.mContact = mName;
     }
 
+    public String getContactNumber() {
+        return mContactNumber;
+    }
+
+    public void setContactNumber(String contactNumber) {
+        mContactNumber = contactNumber;
+    }
+
     public String getEmail() {
         return mEmail;
     }
 
     public void setEmail(String mEmail) {
         this.mEmail = mEmail;
+    }
+
+    public String getEmailSubject() {
+        return mEmailSubject;
+    }
+
+    public void setEmailSubject(String emailSubject) {
+        mEmailSubject = emailSubject;
     }
 
     public int getDeleteOnComplete() {
@@ -66,6 +134,17 @@ public class Event {
     }
 
     public String toString(){
-        return "Event{ title: "+getTitle()+" type: "+getType()+" text: "+getText()+" contact: "+getContact()+" email: "+getEmail()+" delete: "+getDeleteOnComplete()+" }";
+        return "Event{ lat: "+getLatitude()+
+                " long: "+getLongitude()+
+                " radius: "+getRadius()+
+                " address "+getAddress()+
+                " title: "+getTitle()+
+                " type: "+getType()+
+                " text: "+getText()+
+                " contact: "+getContact()+
+                " contact number: "+getContactNumber()+
+                " email: "+getEmail()+
+                " email subject: "+getEmailSubject()+
+                " delete: "+getDeleteOnComplete()+" }";
     }
 }
