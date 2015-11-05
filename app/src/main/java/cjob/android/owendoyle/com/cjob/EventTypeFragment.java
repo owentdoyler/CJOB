@@ -56,7 +56,7 @@ public class EventTypeFragment extends Fragment {
         types.add("Alarm");
         types.add("Send SMS");
         types.add("Push Notification");
-        types.add("Send Email");
+        types.add("Send Email (Gmail only)");
 
         mAdapter = new EventTypeAdapter(types);
         mTypeRecyclerView.setAdapter(mAdapter);
@@ -131,7 +131,7 @@ public class EventTypeFragment extends Fragment {
                     eventIcon = R.drawable.ic_speaker_icon;
                     eventId = EventManager.NOTIFICATION;
                 }
-                else if( type == "Send Email") {
+                else if( type == "Send Email (Gmail only)") {
                     eventIcon = R.drawable.ic_gmail_icon;
                     eventId = EventManager.EMAIL;
                 }

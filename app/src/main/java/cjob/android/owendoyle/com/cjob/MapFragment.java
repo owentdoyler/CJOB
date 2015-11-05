@@ -103,8 +103,8 @@ public class MapFragment extends SupportMapFragment {
                 return true;
             case R.id.action_add_event:
                 Intent intent = EventTypeActivity.newIntent(getActivity(), mSelectedMarker.getPosition().latitude, mSelectedMarker.getPosition().longitude,"address");
-                //startActivity(intent);
-                Log.d(TAG, ""+Environment.getExternalStorageDirectory());
+                startActivity(intent);
+                //Log.d(TAG, ""+Environment.getExternalStorageDirectory());
                 try {
                     createFileOnDevice(true);
                 }catch (IOException e){
