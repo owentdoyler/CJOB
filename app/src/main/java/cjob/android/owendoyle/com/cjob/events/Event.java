@@ -148,7 +148,7 @@ public class Event {
 
     public String toString(){
         return "Event{ Id: "+getId()+
-                "lat: "+getLatitude()+
+                " lat: "+getLatitude()+
                 " long: "+getLongitude()+
                 " radius: "+getRadius()+
                 " address "+getAddress()+

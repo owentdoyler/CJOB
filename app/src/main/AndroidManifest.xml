@@ -30,7 +30,8 @@
         <activity android:name=".SettingsActivity"
                   android:parentActivityName=".EventTypeActivity"
                   android:label="@string/event_settings_label"
-                  android:windowSoftInputMode="stateHidden">
+                  android:windowSoftInputMode="stateHidden"
+                  android:screenOrientation="portrait">
 
         </activity>
         <service android:name=".BackgroundLocationService"/>
