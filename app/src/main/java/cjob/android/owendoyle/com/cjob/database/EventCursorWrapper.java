@@ -20,6 +20,7 @@ public class EventCursorWrapper extends CursorWrapper {
     //extract columns containing information about the event
     public Event getEventDetails(){
         Event event = new Event();
+        int eventId = getInt(getColumnIndex("_id"));
         String lat = getString(getColumnIndex(EventsDbSchema.EventsTable.Cols.LAT));
         String longitude = getString(getColumnIndex(EventsDbSchema.EventsTable.Cols.LONG));
         String radius = getString(getColumnIndex(EventsDbSchema.EventsTable.Cols.RADIUS));
@@ -33,6 +34,7 @@ public class EventCursorWrapper extends CursorWrapper {
         event.setEmailSubject(getString(getColumnIndex(EventsDbSchema.EventsTable.Cols.EMAIL_SUBJECT)));
         event.setDeleteOnComplete(getInt(getColumnIndex(EventsDbSchema.EventsTable.Cols.DELETE_ON_COMPLETE)));
 
+        event.setId(eventId);
         event.setLatitude(Double.parseDouble(lat));
         event.setLongitude(Double.parseDouble(longitude));
         event.setRadius(Integer.parseInt(radius));

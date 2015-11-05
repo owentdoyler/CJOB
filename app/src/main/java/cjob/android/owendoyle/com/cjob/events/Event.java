@@ -1,5 +1,7 @@
 package cjob.android.owendoyle.com.cjob.events;
 
+import java.util.UUID;
+
 /**
  * Name: Owen Doyle
  * Student Number: 12453618
@@ -9,6 +11,7 @@ package cjob.android.owendoyle.com.cjob.events;
  */
 public class Event {
 
+    private int id;
     private Double latitude;
     private Double longitude;
     private int radius;
@@ -23,6 +26,7 @@ public class Event {
     private int mDeleteOnComplete;
 
     public Event(){
+
         latitude = null;
         longitude = null;
         radius = 10;
@@ -36,6 +40,15 @@ public class Event {
         mEmailSubject = null;
         mDeleteOnComplete = 1;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public Double getLatitude() {
         return latitude;
     }
@@ -134,7 +147,8 @@ public class Event {
     }
 
     public String toString(){
-        return "Event{ lat: "+getLatitude()+
+        return "Event{ Id: "+getId()+
+                "lat: "+getLatitude()+
                 " long: "+getLongitude()+
                 " radius: "+getRadius()+
                 " address "+getAddress()+
