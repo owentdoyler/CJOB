@@ -112,7 +112,7 @@ public class EventManager {
                         (1 - Math.cos((lng2 - lng1) * p))/2;
 
         double distance = 12742 * Math.asin(Math.sqrt(a));
-        return distance*1000 <= radius;
+        return distance <= radius;
     }
 
     public void checkForEvents(Location location){

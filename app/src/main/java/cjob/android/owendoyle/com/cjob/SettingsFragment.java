@@ -147,7 +147,11 @@ public class SettingsFragment extends Fragment {
         Intent intent = new Intent(getActivity(),MapActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+        Intent i = new Intent(getActivity(),BackgroundLocationService.class);
+        getActivity().startService(i);
+
     }
+
 
     public static SettingsFragment newInstance(double latitude, double longitude, String address, int event_type) {
         Bundle args = new Bundle();
