@@ -39,6 +39,37 @@ public class MailEvent extends javax.mail.Authenticator {
 
     private Multipart _multipart;
 
+    public String[] get_to() {
+        return _to;
+    }
+
+    public void set_to(String[] _to) {
+        this._to = _to;
+    }
+
+    public String get_subject() {
+        return _subject;
+    }
+
+    public void set_subject(String _subject) {
+        this._subject = _subject;
+    }
+
+    public String get_from() {
+        return _from;
+    }
+
+    public void set_from(String _from) {
+        this._from = _from;
+    }
+
+    public String get_body() {
+        return _body;
+    }
+
+    public void set_body(String _body) {
+        this._body = _body;
+    }
 
     public MailEvent() {
         _host = "smtp.gmail.com"; // default smtp server

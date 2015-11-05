@@ -315,4 +315,10 @@ public class EventManager {
         SmsManager sms = SmsManager.getDefault();
         sms.sendTextMessage(event.getContactNumber(), null, event.getText(), sentPI, deliveredPI);
     }
+
+    private void sendEmail(Event event){
+        MailEvent email = new MailEvent();
+
+        //email.set_to();
+    }
 }
