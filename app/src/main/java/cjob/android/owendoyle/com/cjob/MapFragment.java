@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,6 +21,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 
 /**
@@ -39,14 +45,37 @@ public class MapFragment extends SupportMapFragment {
     private Location mLastLocation;
     private Marker mSelectedMarker = null;
     private SQLiteDatabase mDataBase;
+    private static BufferedWriter out;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        try {
+            createFileOnDevice(false);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
         setHasOptionsMenu(true);
         setupClient();
         setUpMap();
+    }
+
+    private void createFileOnDevice(Boolean append)  throws IOException{
+        File root = Environment.getExternalStorageDirectory();
+        if(root.canWrite()){
+            File logFile = new File(root, "CJOBlog.txt");
+            FileWriter logWriter = new FileWriter(logFile, append);
+            out = new BufferedWriter(logWriter);
+        }
+    }
+
+    private void writeToFile(String message){
+        try {
+            out.write(message+"\n");
+            out.close();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -74,7 +103,14 @@ public class MapFragment extends SupportMapFragment {
                 return true;
             case R.id.action_add_event:
                 Intent intent = EventTypeActivity.newIntent(getActivity(), mSelectedMarker.getPosition().latitude, mSelectedMarker.getPosition().longitude,"address");
-                startActivity(intent);
+                //startActivity(intent);
+                Log.d(TAG, ""+Environment.getExternalStorageDirectory());
+                try {
+                    createFileOnDevice(true);
+                }catch (IOException e){
+                    e.printStackTrace();
+                }
+                writeToFile("Log");
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -73,14 +73,14 @@ public class SettingsFragment extends Fragment {
         newEvent.setAddress(getArguments().getString(ARG_ADDRESS));
         newEvent.setType(Integer.toString(getArguments().getInt(ARG_EVENT_TYPE)));
 
-        if(getArguments().get(ARG_EVENT_TYPE) == EventManager.ALARM){
+        if((Integer)getArguments().get(ARG_EVENT_TYPE) == EventManager.ALARM){
             View v = inflater.inflate(R.layout.alarm_settings,container,false);
             editTitle(v);
             radiusPicker(v);
             deleteOnCompleteCheck(v);
             return v;
         }
-        else if(getArguments().get(ARG_EVENT_TYPE) == EventManager.SMS){
+        else if((Integer)getArguments().get(ARG_EVENT_TYPE) == EventManager.SMS){
             View v = inflater.inflate(R.layout.sms_settings,container,false);
             editTitle(v);
             radiusPicker(v);
@@ -89,7 +89,7 @@ public class SettingsFragment extends Fragment {
             deleteOnCompleteCheck(v);
             return v;
         }
-        else if(getArguments().get(ARG_EVENT_TYPE) == EventManager.NOTIFICATION){
+        else if((Integer)getArguments().get(ARG_EVENT_TYPE) == EventManager.NOTIFICATION){
             View v = inflater.inflate(R.layout.notification_settings,container,false);
             editTitle(v);
             radiusPicker(v);
@@ -119,16 +119,16 @@ public class SettingsFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_item_create_event:
-                    if(getArguments().get(ARG_EVENT_TYPE) == EventManager.ALARM && newEvent.getTitle() != null && newEvent.getTitle() != ""){
+                    if((Integer)getArguments().get(ARG_EVENT_TYPE) == EventManager.ALARM && newEvent.getTitle() != null && newEvent.getTitle() != ""){
                        createEvent();
                     }
-                    else if(getArguments().get(ARG_EVENT_TYPE) == EventManager.SMS && completeSmsEvent()){
+                    else if((Integer)getArguments().get(ARG_EVENT_TYPE) == EventManager.SMS && completeSmsEvent()){
                        createEvent();
                     }
-                    else if(getArguments().get(ARG_EVENT_TYPE) == EventManager.NOTIFICATION && completeNotificationEvent()){
+                    else if((Integer)getArguments().get(ARG_EVENT_TYPE) == EventManager.NOTIFICATION && completeNotificationEvent()){
                         createEvent();
                     }
-                    else if(getArguments().get(ARG_EVENT_TYPE) == EventManager.EMAIL && completeEmailEvent()){
+                    else if((Integer)getArguments().get(ARG_EVENT_TYPE) == EventManager.EMAIL && completeEmailEvent()){
                        createEvent();
                     }
                     else{
