@@ -1,7 +1,6 @@
 package cjob.android.owendoyle.com.cjob.events;
 
 import android.app.Activity;
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -12,9 +11,6 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
-import android.media.AudioAttributes;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -24,11 +20,11 @@ import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.Toast;
 
-import java.util.Timer;
-
+import cjob.android.owendoyle.com.cjob.BackgroundLocationService;
+import cjob.android.owendoyle.com.cjob.MapActivity;
+import cjob.android.owendoyle.com.cjob.MapFragment;
 import cjob.android.owendoyle.com.cjob.database.EventCursorWrapper;
 import cjob.android.owendoyle.com.cjob.database.EventsDatabaseHelper;
-import cjob.android.owendoyle.com.cjob.database.EventsDbSchema;
 import cjob.android.owendoyle.com.cjob.database.EventsDbSchema.EventsTable;
 import cjob.android.owendoyle.com.cjob.R;
 
@@ -51,10 +47,9 @@ public class EventManager {
 
     private static final String SENT = "SMS_SENT";
     private static final String DELIVERED = "SMS_DELIVERED";
+    public static final String EXTRA_REFRESH = "com.refresh";
 
     String curr = "";
-    //basic layout of a SQLite where clause
-    private static final String WHERE_CLAUSE = EventsTable.Cols.LAT+ " =? AND " +EventsTable.Cols.LONG+ "=?";
 
     private SQLiteDatabase mDataBase;
     private Context mContext;
@@ -92,14 +87,15 @@ public class EventManager {
         mDataBase.insert(EventsTable.NAME, null, values);
     }
 
-    public void getEvent(Event event){
-
-    }
-
     public void deleteEvent(Event event){
         int eventId = event.getId();
         mDataBase.delete(EventsTable.NAME, "_id = ?", new String[]{Integer.toString(eventId)});
-
+        EventCursorWrapper cursor = queryEvents(null, null);
+        if (cursor.getCount() == 0){
+            Intent i = new Intent(mContext, BackgroundLocationService.class);
+            mContext.stopService(i);
+        }
+        cursor.close();
     }
 
     public void updateEvent(Event event) {
@@ -244,7 +240,6 @@ public class EventManager {
                     logEvents();
                 }
                 return;
-            //TODO add implementations for other event types
             default:
                 return;
         }
@@ -265,7 +260,7 @@ public class EventManager {
     }
 
     //construct the arguments for the where clause based on the given location
-    private String[] getWhereArgs(Location location){                                       //TODO add code for dealing with location radius
+    private String[] getWhereArgs(Location location){
         String[] whereArgs = new String[]{
                 ""+location.getLatitude(),
                 ""+location.getLongitude()
@@ -357,7 +352,7 @@ public class EventManager {
     private void setOffAlarm(){
         Vibrator vibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
 
-        vibrator.vibrate(new long[]{1000,1000,1000,1000},-1);
+        vibrator.vibrate(new long[]{1000, 1000, 1000, 1000}, -1);
         try {
             Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
             Ringtone r = RingtoneManager.getRingtone(mContext, notification);
