@@ -24,6 +24,8 @@ public class Event {
     private String mEmail;
     private String mEmailSubject;
     private int mDeleteOnComplete;
+    private String mUserEmail;
+    private String mUserPassword;
 
     public Event(){
 
@@ -39,6 +41,8 @@ public class Event {
         mEmail = null;
         mEmailSubject = null;
         mDeleteOnComplete = 1;
+        mUserPassword = null;
+        mUserEmail = null;
     }
 
     public int getId() {
@@ -144,6 +148,22 @@ public class Event {
 
     public void setType(String mType) {
         this.mType = mType;
+    }
+
+    public String getUserEmail() {
+        return mUserEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        mUserEmail = userEmail;
+    }
+
+    public String getUserPassword() {
+        return mUserPassword;
+    }
+
+    public void setUserPassword(String userPassword) {
+        mUserPassword = userPassword;
     }
 
     public String toString(){

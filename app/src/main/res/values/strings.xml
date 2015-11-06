@@ -21,4 +21,14 @@
     <string name="event_settings_label">Event Settings</string>
     <string name="event_created_toast">Event created</string>
     <string name="event_empty_fields_toast">Pleas fill in all fields!</string>
+    <string name="dialog_emailpassword_title">Enter Your Gmail Login Details</string>
+    <string name="dialog_email_heading">Email</string>
+    <string name="dialog_password_heading">Password</string>
+    <string name="dialog_create_button">Create</string>
+    <string name="dialog_email_hint">Email address</string>
+    <string name="dialog_password_hint">Password</string>
+    <string name="email_send_error">Email did not send!</string>
+    <string name="email_important_message">IMPORTANT!    Please insure you have the \"Allow less
+        secure apps\" setting turned on for your Google account. To check go to myaccount.google.com/security.
+        Your email will not send if this setting is off.</string>
 </resources>

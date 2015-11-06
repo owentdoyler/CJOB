@@ -25,6 +25,8 @@ public class EventsDbSchema {
             public static final String CONTACT_NUMBER = "contact_number";
             public static final String EMAIL_ADDRESS = "email_address";
             public static final String EMAIL_SUBJECT = "email_subject";
+            public static final String USER_EMAIL = "user_email";
+            public static final String USER_PASSWORD = "user_password";
         }
     }
 }

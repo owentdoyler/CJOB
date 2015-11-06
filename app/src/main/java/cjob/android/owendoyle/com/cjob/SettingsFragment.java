@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -30,7 +31,8 @@ import cjob.android.owendoyle.com.cjob.events.EventManager;
  * Created by Owner on 30/10/2015.
  */
 public class SettingsFragment extends Fragment {
-
+    private static final int REQUEST_EMAIL_PASSWORD = 123;
+    private static final String DIALOG_EMIAL = "dialogemail";
     private static final String TAG = "SettingsFragment";
     private static final String ARG_LATITUDE = "latitude";
     private static final String ARG_LONGITUDE = "longitude";
@@ -129,7 +131,7 @@ public class SettingsFragment extends Fragment {
                         createEvent();
                     }
                     else if((Integer)getArguments().get(ARG_EVENT_TYPE) == EventManager.EMAIL && completeEmailEvent()){
-                       createEvent();
+                       createEmailEvent();
                     }
                     else{
                         Toast.makeText(getActivity(),R.string.event_empty_fields_toast,Toast.LENGTH_SHORT).show();
@@ -150,6 +152,13 @@ public class SettingsFragment extends Fragment {
         Intent i = new Intent(getActivity(),BackgroundLocationService.class);
         getActivity().startService(i);
 
+    }
+
+    private void createEmailEvent(){
+        FragmentManager manager = getFragmentManager();
+        EmailPasswordFragment dialog = new EmailPasswordFragment();
+        dialog.setTargetFragment(SettingsFragment.this,REQUEST_EMAIL_PASSWORD);
+        dialog.show(manager, DIALOG_EMIAL);
     }
 
 
@@ -347,6 +356,11 @@ public class SettingsFragment extends Fragment {
             }finally {
                 c.close();
             }
+        }
+        else if(requestCode == REQUEST_EMAIL_PASSWORD){
+            newEvent.setUserEmail(data.getStringExtra(EmailPasswordFragment.EXTRA_EMAIL));
+            newEvent.setUserPassword(data.getStringExtra(EmailPasswordFragment.EXTRA_PASS));
+            createEvent();
         }
     }
 

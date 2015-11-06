@@ -1,6 +1,7 @@
 package cjob.android.owendoyle.com.cjob.events;
 
 import android.app.Activity;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -11,10 +12,19 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.Toast;
+
+import java.util.Timer;
 
 import cjob.android.owendoyle.com.cjob.database.EventCursorWrapper;
 import cjob.android.owendoyle.com.cjob.database.EventsDatabaseHelper;
@@ -71,6 +81,8 @@ public class EventManager {
         values.put(EventsTable.Cols.CONTACT_NUMBER,event.getContactNumber());
         values.put(EventsTable.Cols.EMAIL_ADDRESS,event.getEmail());
         values.put(EventsTable.Cols.EMAIL_SUBJECT,event.getEmailSubject());
+        values.put(EventsTable.Cols.USER_EMAIL,event.getUserEmail());
+        values.put(EventsTable.Cols.USER_PASSWORD,event.getUserPassword());
 
         return values;
     }
@@ -218,6 +230,20 @@ public class EventManager {
                     logEvents();
                 }
                 return;
+            case EMAIL:
+                new SendEmail().execute(event);
+                if(event.getDeleteOnComplete() == 1){
+                    deleteEvent(event);
+                    logEvents();
+                }
+                return;
+            case ALARM:
+                setOffAlarm();
+                if(event.getDeleteOnComplete() == 1){
+                    deleteEvent(event);
+                    logEvents();
+                }
+                return;
             //TODO add implementations for other event types
             default:
                 return;
@@ -248,14 +274,26 @@ public class EventManager {
     }
 
     private void sendNotification(Event event){
+        Uri path =  Uri.parse("android.resource://" + "cjob.android.owendoyle.com.cjob" + "/" + R.raw.notification1);
         String text = event.getText();
         NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext)
                 .setSmallIcon(R.mipmap.ic_testicon)
-                .setContentTitle("Woohoo it works")
+                .setContentTitle(event.getTitle())
                 .setContentText(text);
+
 
         NotificationManager notifyManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         notifyManager.notify(001, builder.build());
+        try {
+            Vibrator vibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
+            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            Ringtone r = RingtoneManager.getRingtone(mContext, notification);
+            vibrator.vibrate(new long[]{1000,1000},-1);
+            r.play();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void sendSms(Event event){
@@ -315,4 +353,19 @@ public class EventManager {
         SmsManager sms = SmsManager.getDefault();
         sms.sendTextMessage(event.getContactNumber(), null, event.getText(), sentPI, deliveredPI);
     }
+
+    private void setOffAlarm(){
+        Vibrator vibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
+
+        vibrator.vibrate(new long[]{1000,1000,1000,1000},-1);
+        try {
+            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+            Ringtone r = RingtoneManager.getRingtone(mContext, notification);
+            r.play();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }
+
