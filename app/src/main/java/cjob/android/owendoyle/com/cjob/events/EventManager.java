@@ -22,6 +22,7 @@ import cjob.android.owendoyle.com.cjob.database.EventsDbSchema;
 import cjob.android.owendoyle.com.cjob.database.EventsDbSchema.EventsTable;
 import cjob.android.owendoyle.com.cjob.R;
 
+
 /**
  * Name: Owen Doyle
  * Student Number: 12453618
@@ -41,7 +42,7 @@ public class EventManager {
     private static final String SENT = "SMS_SENT";
     private static final String DELIVERED = "SMS_DELIVERED";
 
-
+    String curr = "";
     //basic layout of a SQLite where clause
     private static final String WHERE_CLAUSE = EventsTable.Cols.LAT+ " =? AND " +EventsTable.Cols.LONG+ "=?";
 
@@ -79,9 +80,14 @@ public class EventManager {
         mDataBase.insert(EventsTable.NAME, null, values);
     }
 
+    public void getEvent(Event event){
+
+    }
+
     public void deleteEvent(Event event){
         int eventId = event.getId();
         mDataBase.delete(EventsTable.NAME, "_id = ?", new String[]{Integer.toString(eventId)});
+
     }
 
     public void updateEvent(Event event) {
@@ -96,7 +102,7 @@ public class EventManager {
         try {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
-                Log.d(TAG,cursor.getEventDetails().toString());
+                Log.d(TAG,"Current Database: "+cursor.getEventDetails().toString());
                 cursor.moveToNext();
             }
         } finally {
@@ -105,38 +111,88 @@ public class EventManager {
     }
 
     //checks if the distance between two coordinates is <= the given radius
-    public boolean checkdistance(double lat1, double lng1, double lat2, double lng2, double radius){
+    public double checkdistance(double lat1, double lng1, double lat2, double lng2, double radius){
         double p = 0.017453292519943295;
         double a = 0.5 - Math.cos((lat2 - lat1) * p)/2 +
                 Math.cos(lat1 * p) * Math.cos(lat2 * p) *
                         (1 - Math.cos((lng2 - lng1) * p))/2;
 
         double distance = 12742 * Math.asin(Math.sqrt(a));
-        return distance <= radius;
+        Log.d(TAG, "ID: " + curr + " Distance = " + distance * 1000 + " Radius = " + radius);
+        return distance*1000;
     }
+
+//    public void sortOrder(double lat, double lng){
+//        String order = "(( "+lat+" - "+EventsTable.Cols.LAT+ ") * " +
+//                "( "+lat+" - "+EventsTable.Cols.LAT+" ) + " +
+//                "( "+lng+" - "+EventsTable.Cols.LAT+" ) * " +
+//                "( "+lng+" - "+EventsTable.Cols.LAT+" ))";
+//
+//        //gets the nearest event
+//        Cursor cursor1 =  mDataBase.rawQuery("SELECT * FROM " + EventsTable.NAME + " ORDER BY " + order +" ASC", null);
+//
+//        EventCursorWrapper cursor = new EventCursorWrapper(cursor1);
+//
+//        //check if any events were found
+//        if(cursor.moveToFirst()){
+//            while (!cursor.isAfterLast()){
+//
+//                Event event = cursor.getEventDetails();
+//
+//                Log.d(TAG, "Ordered DB"+event.toString());
+//
+//                cursor.moveToNext();
+//            }
+//            cursor.close();
+//            return;
+//        }
+//        else {
+//            cursor.close();
+//            return;
+//        }
+//    }
 
     public void checkForEvents(Location location){
         //sort the database with the nearest event at the top
-        String order = "(( "+location.getLatitude()+" - "+EventsTable.Cols.LAT+ ") * " +
-                       "( "+location.getLatitude()+" - "+EventsTable.Cols.LAT+" ) + " +
-                       "( "+location.getLongitude()+" - "+EventsTable.Cols.LAT+" ) * " +
-                       "( "+location.getLongitude()+" - "+EventsTable.Cols.LAT+" ))";
+//        String order = "(( "+location.getLatitude()+" - "+EventsTable.Cols.LAT+ ") * " +
+//                       "( "+location.getLatitude()+" - "+EventsTable.Cols.LAT+" ) + " +
+//                       "( "+location.getLongitude()+" - "+EventsTable.Cols.LAT+" ) * " +
+//                       "( "+location.getLongitude()+" - "+EventsTable.Cols.LAT+" ))";
 
         //gets the nearest event
-        Cursor cursor1 =  mDataBase.rawQuery("SELECT * FROM " + EventsTable.NAME + " WHERE " + order+" LIMIT 1", null);
-
-        EventCursorWrapper cursor = new EventCursorWrapper(cursor1);
-
+        //Cursor cursor1 =  mDataBase.rawQuery("SELECT * FROM " + EventsTable.NAME + " ORDER BY " + order+" ASC LIMIT 1", null);
+        String nearestId = "";
+        double smallestDistance = 0.0;
+        EventCursorWrapper cursor = queryEvents(null,null);
+        //sortOrder(location.getLatitude(),location.getLongitude());
         //check if any events were found
         if(cursor.moveToFirst()){
             while (!cursor.isAfterLast()){
+
                 Event event = cursor.getEventDetails();
-//                double radius = (double) event.getRadius();
-//                checkdistance(location.getLatitude(),location.getLongitude(),event.getLatitude(),event.getLongitude(),radius);
-                Log.d(TAG, event.toString());
-                performEvent(event);
+                curr = event.getTitle();
+                double radius = (double) event.getRadius();
+                checkdistance(location.getLatitude(), location.getLongitude(), event.getLatitude(), event.getLongitude(), radius);
+                Log.d(TAG, "Chosen event:" + event.toString());
+                double currentDistance = checkdistance(location.getLatitude(),location.getLongitude(),event.getLatitude(),event.getLongitude(),radius);
+
+                if(smallestDistance <= 0.0){
+                    smallestDistance = currentDistance;
+                    nearestId = event.getTitle();
+                }
+                else if(currentDistance <= smallestDistance){
+                    smallestDistance = currentDistance;
+                    nearestId = event.getTitle();
+                }
+
+                if(currentDistance <= radius) {
+
+                    Log.d(TAG, "Preforming event:"+event.toString());
+                    performEvent(event);
+                }
                 cursor.moveToNext();
             }
+            Toast.makeText(mContext,"Nearest event: "+nearestId+" Distance: "+smallestDistance,Toast.LENGTH_SHORT).show();
             cursor.close();
             return;
         }
@@ -150,6 +206,17 @@ public class EventManager {
         switch (Integer.parseInt(event.getType())){
             case NOTIFICATION:
                 sendNotification(event);
+                if(event.getDeleteOnComplete() == 1){
+                    deleteEvent(event);
+                    logEvents();
+                }
+                return;
+            case SMS:
+                sendSms(event);
+                if(event.getDeleteOnComplete() == 1){
+                    deleteEvent(event);
+                    logEvents();
+                }
                 return;
             //TODO add implementations for other event types
             default:
@@ -174,8 +241,8 @@ public class EventManager {
     //construct the arguments for the where clause based on the given location
     private String[] getWhereArgs(Location location){                                       //TODO add code for dealing with location radius
         String[] whereArgs = new String[]{
-            ""+location.getLatitude(),
-            ""+location.getLongitude()
+                ""+location.getLatitude(),
+                ""+location.getLongitude()
         };
         return whereArgs;
     }
@@ -234,6 +301,8 @@ public class EventManager {
                     case Activity.RESULT_OK:
                         Toast.makeText(mContext, "SMS delivered",
                                 Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "SMS SENT");
+
                         break;
                     case Activity.RESULT_CANCELED:
                         Toast.makeText(mContext, "SMS not delivered",
@@ -245,11 +314,5 @@ public class EventManager {
 
         SmsManager sms = SmsManager.getDefault();
         sms.sendTextMessage(event.getContactNumber(), null, event.getText(), sentPI, deliveredPI);
-    }
-
-    private void sendEmail(Event event){
-        MailEvent email = new MailEvent();
-
-        //email.set_to();
     }
 }
