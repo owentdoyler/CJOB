@@ -97,7 +97,7 @@ public class BackgroundLocationService extends Service implements GoogleApiClien
         startForeground(NOTE_ID,notification);
         Log.d(TAG, ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Service Started <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 
-        if (intent != null){    //TODO this if statement could possibly be removed
+        if (intent != null){
             latLng = new LatLng(intent.getDoubleExtra(MapFragment.EXTRA_LATITUDE, 0), intent.getDoubleExtra(MapFragment.EXTRA_LONGITUDE, 0));
         }
 

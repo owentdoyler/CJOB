@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Map</string>
     <string name="action_settings">Settings</string>
-    <string name="action_event_details">Event Details</string>
+    <string name="action_event_details">View Event</string>
     <string name="action_delete_marker">Delete Marker</string>
     <string name="action_add_event">Add Event</string>
     <string name="event_title_hint">Enter a title for the event.</string>
@@ -31,5 +31,6 @@
     <string name="email_important_message">IMPORTANT!    Please insure you have the \"Allow less
         secure apps\" setting turned on for your Google account. To check go to myaccount.google.com/security.
         Your email will not send if this setting is off.</string>
-    <string name="service_notification_message">Finding your location</string>
+    <string name="map_title">Choose A Location</string>
+    <string name="event_type_title">Choose An Event</string>
 </resources>

@@ -21,8 +21,8 @@ import cjob.android.owendoyle.com.cjob.events.EventManager;
  * Created by Owner on 28/10/2015.
  */
 public class EventTypeFragment extends Fragment {
-
-    public static final  String EXTRA_EVENT_TYPE = "com.event_type";
+    private static final String PACKAGE = "cjob.android.owendoyle.com.cjob";
+    public static final  String EXTRA_EVENT_TYPE = PACKAGE+"event_type";
     private static final String ARG_LATITUDE = "latitude";
     private static final String ARG_LONGITUDE = "longitude";
     private static final String ARG_ADDRESS = "address";

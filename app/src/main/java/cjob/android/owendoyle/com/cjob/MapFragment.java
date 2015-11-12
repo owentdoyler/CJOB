@@ -1,8 +1,6 @@
 package cjob.android.owendoyle.com.cjob;
 
-import android.app.ActivityManager;
-import android.content.ContentValues;
-import android.content.Context;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -11,35 +9,26 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.Handler;
-import android.os.ResultReceiver;
-import android.os.SystemClock;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,6 +39,7 @@ import cjob.android.owendoyle.com.cjob.database.EventCursorWrapper;
 import cjob.android.owendoyle.com.cjob.database.EventsDatabaseHelper;
 import cjob.android.owendoyle.com.cjob.database.EventsDbSchema;
 import cjob.android.owendoyle.com.cjob.events.Event;
+import cjob.android.owendoyle.com.cjob.events.EventManager;
 
 /**
  * Name: Owen Doyle
@@ -58,36 +48,28 @@ import cjob.android.owendoyle.com.cjob.events.Event;
  */
 public class MapFragment extends SupportMapFragment {
     private static final String TAG = "MapFragment";
-
-    public static final String EXTRA_LATITUDE = "com.latitude"; //TODO change this string
-    public static final String EXTRA_LONGITUDE = "com.longitude"; //TODO change this string
-    public static final String EXTRA_ADDRESS = "com.address";
-    public static final String LOCATION_EXTRA = "com.location";
-    public static final String RECEIVER = "com.receiver";
+    private static final String PACKAGE = "cjob.android.owendoyle.com.cjob";
+    public static final String EXTRA_LATITUDE = PACKAGE+"latitude";
+    public static final String EXTRA_LONGITUDE = PACKAGE+"longitude";
+    public static final String EXTRA_ADDRESS = PACKAGE+"address";
+    public static final String REFRESH = "refresh";
 
     private HashMap<Marker, Boolean> mMarkerEvents = new HashMap<>();
+    private HashMap<Marker, Integer> mMarkerEventIDs = new HashMap<>();
+    private HashMap<Marker, Circle> mMarkerEventCircles = new HashMap<>();
     private GoogleApiClient mClient;
     private GoogleMap mMap;
     private Location mLastLocation;
     private Marker mSelectedMarker = null;
     private SQLiteDatabase mDataBase;
-    private static BufferedWriter out;
-
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        try {
-            createFileOnDevice(false);
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-//        setupLocationListener();
         mDataBase = new EventsDatabaseHelper(getActivity().getApplicationContext()).getWritableDatabase();
         setHasOptionsMenu(true);
         setupClient();
-        setUpMap();
     }
 
     @Override
@@ -114,15 +96,21 @@ public class MapFragment extends SupportMapFragment {
                 getActivity().invalidateOptionsMenu();
                 return true;
             case R.id.action_add_event:
-                Intent intent = EventTypeActivity.newIntent(getActivity(), mSelectedMarker.getPosition().latitude, mSelectedMarker.getPosition().longitude,"address");
+                Intent intent = EventTypeActivity.newIntent(getActivity(), mSelectedMarker.getPosition().latitude, mSelectedMarker.getPosition().longitude, mSelectedMarker.getTitle());
                 startActivity(intent);
-//                Log.d(TAG, ""+Environment.getExternalStorageDirectory());
-//                try {
-//                    createFileOnDevice(true);
-//                }catch (IOException e){
-//                    e.printStackTrace();
-//                }
-//                writeToFile("Log");
+                return true;
+            case R.id.action_event_details:
+                //TODO Launch event details activity
+                return true;
+            case R.id.action_delete_event:
+                mSelectedMarker.remove();
+                mMarkerEvents.remove(mSelectedMarker);
+                deleteEvent(mMarkerEventIDs.get(mSelectedMarker));
+                mMarkerEventIDs.remove(mSelectedMarker);
+                mMarkerEventCircles.get(mSelectedMarker).remove();
+                mMarkerEventCircles.remove(mSelectedMarker);
+                mSelectedMarker = null;
+                getActivity().invalidateOptionsMenu();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -156,6 +144,7 @@ public class MapFragment extends SupportMapFragment {
                 mMap = googleMap;
                 mMap.setMyLocationEnabled(true);
                 loadEvents();
+
                 mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
                     @Override
                     public void onMapLongClick(LatLng latLng) {
@@ -166,17 +155,18 @@ public class MapFragment extends SupportMapFragment {
 
                     }
                 });
+
                 mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                     @Override
                     public void onMapClick(LatLng latLng) {
                         //no marker selected anymore
                         mSelectedMarker = null;
                         //update the options menu
-                        Intent i = new Intent(getActivity(), BackgroundLocationService.class);
-//                        getActivity().stopService(i);
+
                         getActivity().invalidateOptionsMenu();
                     }
                 });
+
                 mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
                     public boolean onMarkerClick(Marker marker) {
@@ -209,6 +199,15 @@ public class MapFragment extends SupportMapFragment {
     public void onStart() {
         super.onStart();
         mClient.connect();
+        Intent i = getActivity().getIntent();
+        String refresh = i.getStringExtra(EventManager.EXTRA_REFRESH);
+        if (refresh != null){
+            if (refresh.equals(REFRESH)){
+                setUpMap();
+            }
+        }
+
+        setUpMap();
     }
 
     @Override
@@ -224,12 +223,15 @@ public class MapFragment extends SupportMapFragment {
             while (!cursor.isAfterLast()){
                 Event event = cursor.getEventDetails();
                 LatLng latLng = new LatLng(event.getLatitude(), event.getLongitude());
-                Marker marker = mMap.addMarker(new MarkerOptions().position(latLng).title(event.getTitle()));
+                Marker marker = mMap.addMarker(new MarkerOptions().position(latLng).title(event.getTitle()).snippet(event.getAddress()));
+                Circle circle = mMap.addCircle(new CircleOptions().center(latLng).radius(event.getRadius()).strokeColor(Color.BLUE).strokeWidth(5f));
                 mMarkerEvents.put(marker, true);
-                mMap.addCircle(new CircleOptions().center(latLng).radius(event.getRadius()).strokeColor(Color.BLUE));
+                mMarkerEventIDs.put(marker, event.getId());
+                mMarkerEventCircles.put(marker, circle);
                 cursor.moveToNext();
             }
         }
+        cursor.close();
     }
 
     private EventCursorWrapper queryEvents(String whereClause, String[] whereArgs){
@@ -243,24 +245,6 @@ public class MapFragment extends SupportMapFragment {
                 null //orderBy
         );
         return new EventCursorWrapper(cursor);
-    }
-
-    private void createFileOnDevice(Boolean append)  throws IOException{
-        File root = Environment.getExternalStorageDirectory();
-        if(root.canWrite()){
-            File logFile = new File(root, "CJOBlog.txt");
-            FileWriter logWriter = new FileWriter(logFile, append);
-            out = new BufferedWriter(logWriter);
-        }
-    }
-
-    private void writeToFile(String message){
-        try {
-            out.write(message+"\n");
-            out.close();
-        }catch (IOException e){
-            e.printStackTrace();
-        }
     }
 
     private String getAddress(LatLng latLng){
@@ -277,8 +261,18 @@ public class MapFragment extends SupportMapFragment {
                 address = TextUtils.join(System.getProperty("line.separator"), addressFragments);
             }
         }catch (IOException ioe){
-            Log.e(TAG, "error", ioe);
+            Log.e(TAG, "error getting address", ioe);
         }
         return address;
+    }
+
+    private void deleteEvent(int id){
+        mDataBase.delete(EventsDbSchema.EventsTable.NAME, "_id = ?", new String[]{Integer.toString(id)});
+        EventCursorWrapper cursor = queryEvents(null, null);
+        if (cursor.getCount() == 0){
+            Intent i = new Intent(getActivity(), BackgroundLocationService.class);
+            getActivity().stopService(i);
+        }
+        cursor.close();
     }
 }

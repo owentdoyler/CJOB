@@ -6,6 +6,10 @@
     </style>
     <style name="CustomActionBar" parent="@style/Widget.AppCompat.Light.ActionBar">
         <item name="background">@color/base_color_of_app</item>
+        <item name="titleTextStyle">@style/CustomActionBarText</item>
+    </style>
+    <style name="CustomActionBarText" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textColor">#ffffff</item>
     </style>
 
 </resources>
