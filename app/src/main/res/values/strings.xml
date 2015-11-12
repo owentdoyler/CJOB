@@ -31,4 +31,5 @@
     <string name="email_important_message">IMPORTANT!    Please insure you have the \"Allow less
         secure apps\" setting turned on for your Google account. To check go to myaccount.google.com/security.
         Your email will not send if this setting is off.</string>
+    <string name="service_notification_message">Finding your location</string>
 </resources>
