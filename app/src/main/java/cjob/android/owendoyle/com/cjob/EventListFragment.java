@@ -1,5 +1,6 @@
 package cjob.android.owendoyle.com.cjob;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,7 +8,11 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -35,11 +40,30 @@ public class EventListFragment extends Fragment {
     private EventManager eventManager;
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_event_details:
+                Intent i = new Intent(getActivity(), MapActivity.class);
+                startActivity(i);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_marker_event, menu);
+    }
+
+
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
 //        type = (String) getArguments().getString(ARG_EVENT_TYPE);
-        title = (String) getArguments().getString(ARG_EVENT_TITLE);
-        address = (String) getArguments().getString(ARG_ADDRESS);
+        //title = (String) getArguments().getString(ARG_EVENT_TITLE);
+        //address = (String) getArguments().getString(ARG_ADDRESS);
     }
 
     @Nullable
@@ -129,7 +153,7 @@ public class EventListFragment extends Fragment {
 
         @Override
         public int getItemCount() {
-            return 0;
+            return eventList.size();
         }
     }
 }

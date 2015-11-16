@@ -10,6 +10,6 @@ import cjob.android.owendoyle.com.cjob.database.EventsDatabaseHelper;
 public class EventListActivity extends SingleFragmentActivity {
     @Override
     protected Fragment createFragment() {
-        return null;
+        return new EventListFragment();
     }
 }
