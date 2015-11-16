@@ -20,6 +20,9 @@ import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import cjob.android.owendoyle.com.cjob.BackgroundLocationService;
 import cjob.android.owendoyle.com.cjob.MapActivity;
 import cjob.android.owendoyle.com.cjob.MapFragment;
@@ -245,8 +248,24 @@ public class EventManager {
         }
     }
 
+    //This method returns a list of event objects.
+    public List<Event> getEventList(){
+        List<Event> eventList = new ArrayList<Event>();
+        EventCursorWrapper eventCursorWrapper = queryEvents(null, null);
+        try{
+            eventCursorWrapper.moveToFirst();
+            while(!eventCursorWrapper.isAfterLast()){
+                eventList.add(eventCursorWrapper.getEventDetails());
+                eventCursorWrapper.moveToNext();
+            }
+        }finally {
+            eventCursorWrapper.close();
+        }
+        return eventList;
+    }
+
     //This method constructs and a query and then queries the database
-    private EventCursorWrapper queryEvents(String whereClause, String[] whereArgs){
+    public EventCursorWrapper queryEvents(String whereClause, String[] whereArgs){
         Cursor cursor = mDataBase.query(
                 EventsTable.NAME,
                 null, //select all columns
