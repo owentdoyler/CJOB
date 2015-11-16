@@ -130,49 +130,8 @@ public class EventManager {
         return distance*1000;
     }
 
-//    public void sortOrder(double lat, double lng){
-//        String order = "(( "+lat+" - "+EventsTable.Cols.LAT+ ") * " +
-//                "( "+lat+" - "+EventsTable.Cols.LAT+" ) + " +
-//                "( "+lng+" - "+EventsTable.Cols.LAT+" ) * " +
-//                "( "+lng+" - "+EventsTable.Cols.LAT+" ))";
-//
-//        //gets the nearest event
-//        Cursor cursor1 =  mDataBase.rawQuery("SELECT * FROM " + EventsTable.NAME + " ORDER BY " + order +" ASC", null);
-//
-//        EventCursorWrapper cursor = new EventCursorWrapper(cursor1);
-//
-//        //check if any events were found
-//        if(cursor.moveToFirst()){
-//            while (!cursor.isAfterLast()){
-//
-//                Event event = cursor.getEventDetails();
-//
-//                Log.d(TAG, "Ordered DB"+event.toString());
-//
-//                cursor.moveToNext();
-//            }
-//            cursor.close();
-//            return;
-//        }
-//        else {
-//            cursor.close();
-//            return;
-//        }
-//    }
-
     public void checkForEvents(Location location){
-        //sort the database with the nearest event at the top
-//        String order = "(( "+location.getLatitude()+" - "+EventsTable.Cols.LAT+ ") * " +
-//                       "( "+location.getLatitude()+" - "+EventsTable.Cols.LAT+" ) + " +
-//                       "( "+location.getLongitude()+" - "+EventsTable.Cols.LAT+" ) * " +
-//                       "( "+location.getLongitude()+" - "+EventsTable.Cols.LAT+" ))";
-
-        //gets the nearest event
-        //Cursor cursor1 =  mDataBase.rawQuery("SELECT * FROM " + EventsTable.NAME + " ORDER BY " + order+" ASC LIMIT 1", null);
-        String nearestId = "";
-        double smallestDistance = 0.0;
         EventCursorWrapper cursor = queryEvents(null,null);
-        //sortOrder(location.getLatitude(),location.getLongitude());
         //check if any events were found
         if(cursor.moveToFirst()){
             while (!cursor.isAfterLast()){
@@ -184,15 +143,6 @@ public class EventManager {
                 Log.d(TAG, "Chosen event:" + event.toString());
                 double currentDistance = checkdistance(location.getLatitude(),location.getLongitude(),event.getLatitude(),event.getLongitude(),radius);
 
-                if(smallestDistance <= 0.0){
-                    smallestDistance = currentDistance;
-                    nearestId = event.getTitle();
-                }
-                else if(currentDistance <= smallestDistance){
-                    smallestDistance = currentDistance;
-                    nearestId = event.getTitle();
-                }
-
                 if(currentDistance <= radius) {
 
                     Log.d(TAG, "Preforming event:"+event.toString());
@@ -200,7 +150,6 @@ public class EventManager {
                 }
                 cursor.moveToNext();
             }
-            Toast.makeText(mContext,"Nearest event: "+nearestId+" Distance: "+smallestDistance,Toast.LENGTH_SHORT).show();
             cursor.close();
             return;
         }

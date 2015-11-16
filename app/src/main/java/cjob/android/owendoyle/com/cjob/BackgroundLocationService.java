@@ -1,6 +1,5 @@
 package cjob.android.owendoyle.com.cjob;
 
-import android.app.Notification;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -9,7 +8,6 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -37,7 +35,6 @@ import cjob.android.owendoyle.com.cjob.events.EventManager;
 public class BackgroundLocationService extends Service implements GoogleApiClient.OnConnectionFailedListener{
 
     private static final String TAG = "BkgroundLocationService";
-    private static final int NOTE_ID = 0;
 
     IBinder mBinder = new Binder();
     private LocationRequest mLocationRequest;
@@ -69,7 +66,6 @@ public class BackgroundLocationService extends Service implements GoogleApiClien
                     @Override
                     public void onLocationChanged(Location location) {
                         Log.d(TAG, "Location changed to: "+location);
-                        Toast.makeText(getApplicationContext(),"Location changed to: "+location,Toast.LENGTH_SHORT).show();
                         //send any new location to the event manager to check if any events are set for that location
                         EventManager em = new EventManager(mContext);
                         em.checkForEvents(location);
@@ -89,12 +85,6 @@ public class BackgroundLocationService extends Service implements GoogleApiClien
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext)
-                .setSmallIcon(R.mipmap.ic_testicon)
-                .setContentTitle(getString(R.string.app_name))
-                .setContentText(getString(R.string.service_notification_message));
-        Notification notification = builder.build();
-        startForeground(NOTE_ID,notification);
         Log.d(TAG, ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Service Started <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 
         if (intent != null){
