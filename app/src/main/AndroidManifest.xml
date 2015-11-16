@@ -37,6 +37,7 @@
                   android:screenOrientation="portrait">
 
         </activity>
+        <activity android:name=".EventListActivity"></activity>
         <service android:name=".BackgroundLocationService"/>
     </application>
 
