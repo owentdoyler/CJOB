@@ -36,6 +36,7 @@ public class EventsDatabaseHelper extends SQLiteOpenHelper {
                 EventsDbSchema.EventsTable.Cols.CONTACT_NUMBER + ", "+
                 EventsDbSchema.EventsTable.Cols.EMAIL_ADDRESS + ", "+
                 EventsDbSchema.EventsTable.Cols.EMAIL_SUBJECT + ", "+
+                EventsDbSchema.EventsTable.Cols.ACTIVE+" INTEGER, "+
                 EventsDbSchema.EventsTable.Cols.USER_EMAIL+ ", "+
                 EventsDbSchema.EventsTable.Cols.USER_PASSWORD +
                         ")"

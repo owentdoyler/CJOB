@@ -26,6 +26,7 @@ public class Event {
     private int mDeleteOnComplete;
     private String mUserEmail;
     private String mUserPassword;
+    private int mActive;
 
     public Event(){
 
@@ -43,6 +44,15 @@ public class Event {
         mDeleteOnComplete = 1;
         mUserPassword = null;
         mUserEmail = null;
+        mActive = 1;
+    }
+
+    public int getActive() {
+        return mActive;
+    }
+
+    public void setActive(int active) {
+        mActive = active;
     }
 
     public int getId() {
@@ -168,6 +178,7 @@ public class Event {
 
     public String toString(){
         return "Event{ Id: "+getId()+
+                " Active: "+getActive()+
                 " lat: "+getLatitude()+
                 " long: "+getLongitude()+
                 " radius: "+getRadius()+
