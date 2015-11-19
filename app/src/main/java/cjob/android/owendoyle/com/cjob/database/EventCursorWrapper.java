@@ -35,7 +35,7 @@ public class EventCursorWrapper extends CursorWrapper {
         event.setDeleteOnComplete(getInt(getColumnIndex(EventsDbSchema.EventsTable.Cols.DELETE_ON_COMPLETE)));
         event.setUserEmail(getString(getColumnIndex(EventsDbSchema.EventsTable.Cols.USER_EMAIL)));
         event.setUserPassword(getString(getColumnIndex(EventsDbSchema.EventsTable.Cols.USER_PASSWORD)));
-
+        event.setActive(getInt(getColumnIndex(EventsDbSchema.EventsTable.Cols.ACTIVE)));
         event.setId(eventId);
         event.setLatitude(Double.parseDouble(lat));
         event.setLongitude(Double.parseDouble(longitude));
