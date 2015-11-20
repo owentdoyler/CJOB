@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="center_horizontal">
+
+
+    <ImageView
+        android:id="@+id/home_image"
+        android:layout_width="400dp"
+        android:layout_height="150dp"
+        android:src="@drawable/logo1"
+        android:padding="1dp"
+        android:layout_marginTop="50dp"
+        />
+
+    <Button
+        android:id="@+id/view_map_button"
+        android:layout_height="wrap_content"
+        android:layout_width="150dp"
+        style="@style/btnStyleBlue"
+        android:text="@string/home_view_map_button"
+        android:layout_marginBottom="12dp"/>
+
+    <Button
+        android:id="@+id/view_events_button"
+        android:layout_height="wrap_content"
+        android:layout_width="150dp"
+        style="@style/btnStyleBlue"
+        android:text="@string/home_view_events_button"/>
+
+</LinearLayout>
