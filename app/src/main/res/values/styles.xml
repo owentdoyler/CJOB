@@ -4,6 +4,7 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light">
         <item name="android:colorBackground">@color/home_background_colour</item>
         <item name="actionBarStyle">@style/CustomActionBar</item>
+        <item name="android:homeAsUpIndicator">@mipmap/ic_action_navigation_arrow_back</item>
     </style>
     <style name="CustomActionBar" parent="@style/Widget.AppCompat.Light.ActionBar">
         <item name="background">@color/base_color_of_app</item>

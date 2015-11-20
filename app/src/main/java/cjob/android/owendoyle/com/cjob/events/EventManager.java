@@ -261,7 +261,7 @@ public class EventManager {
         Uri path =  Uri.parse("android.resource://" + "cjob.android.owendoyle.com.cjob" + "/" + R.raw.notification1);
         String text = event.getText();
         NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext)
-                .setSmallIcon(R.mipmap.ic_testicon)
+                .setSmallIcon(R.mipmap.ic_name_small)
                 .setContentTitle(event.getTitle())
                 .setContentText(text);
 

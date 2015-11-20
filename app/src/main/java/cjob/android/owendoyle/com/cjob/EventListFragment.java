@@ -39,33 +39,6 @@ public class EventListFragment extends Fragment {
     private String address;
     private EventManager eventManager;
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.action_event_details:
-                Intent i = new Intent(getActivity(), MapActivity.class);
-                startActivity(i);
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_marker_event, menu);
-    }
-
-
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-//        type = (String) getArguments().getString(ARG_EVENT_TYPE);
-        //title = (String) getArguments().getString(ARG_EVENT_TITLE);
-        //address = (String) getArguments().getString(ARG_ADDRESS);
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

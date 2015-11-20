@@ -2,4 +2,5 @@
 <resources>
     <color name="base_color_of_app">#0000ED</color>
     <color name="home_background_colour">#eeeeee</color>
+    <color name="white">#FFFFFF</color>
 </resources>
