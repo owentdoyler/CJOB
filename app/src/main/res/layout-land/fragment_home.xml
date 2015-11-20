@@ -14,20 +14,26 @@
         android:padding="1dp"
         android:layout_marginTop="50dp"
         />
-
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
     <Button
         android:id="@+id/create_event_button"
         android:layout_height="wrap_content"
         android:layout_width="150dp"
         style="@style/btnStyleBlue"
         android:text="@string/home_create_event_button"
-        android:layout_marginBottom="12dp"/>
+        android:layout_marginBottom="12dp"
+        android:layout_marginRight="5dp"/>
 
     <Button
         android:id="@+id/view_events_button"
         android:layout_height="wrap_content"
         android:layout_width="150dp"
         style="@style/btnStyleBlue"
-        android:text="@string/home_view_events_button"/>
+        android:text="@string/home_view_events_button"
+        android:layout_marginLeft="5dp"/>
+    </LinearLayout>
 
 </LinearLayout>

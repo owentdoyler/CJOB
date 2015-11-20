@@ -26,7 +26,7 @@ public class HomeScreenFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_home,container,false);
-        mViewMapButton = (Button) v.findViewById(R.id.view_map_button);
+        mViewMapButton = (Button) v.findViewById(R.id.create_event_button);
         mViewMapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
