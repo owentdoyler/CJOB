@@ -66,7 +66,6 @@ public class BackgroundLocationService extends Service implements GoogleApiClien
                     @Override
                     public void onLocationChanged(Location location) {
                         Log.d(TAG, "Location changed to: "+location);
-                        Toast.makeText(getApplicationContext(),"Location changed to: "+location,Toast.LENGTH_SHORT).show();
                         //send any new location to the event manager to check if any events are set for that location
                         EventManager em = new EventManager(mContext);
                         em.checkForEvents(location);

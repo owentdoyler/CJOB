@@ -20,6 +20,9 @@ import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import cjob.android.owendoyle.com.cjob.BackgroundLocationService;
 import cjob.android.owendoyle.com.cjob.MapActivity;
 import cjob.android.owendoyle.com.cjob.MapFragment;
@@ -78,7 +81,7 @@ public class EventManager {
         values.put(EventsTable.Cols.EMAIL_SUBJECT,event.getEmailSubject());
         values.put(EventsTable.Cols.USER_EMAIL,event.getUserEmail());
         values.put(EventsTable.Cols.USER_PASSWORD,event.getUserPassword());
-
+        values.put(EventsTable.Cols.ACTIVE,event.getActive());
         return values;
     }
 
@@ -100,6 +103,21 @@ public class EventManager {
 
     public void updateEvent(Event event) {
         int eventId = event.getId();
+        ContentValues values = getContentValues(event);
+        mDataBase.update(EventsTable.NAME, values, "_id = ?",
+                new String[]{Integer.toString(eventId)});
+    }
+
+    public void toggleActive(Event event){
+        int eventId = event.getId();
+        int active = event.getActive();
+        if(active == 1){
+            event.setActive(0);
+        }
+        else if(active == 0) {
+            event.setActive(1);
+        }
+
         ContentValues values = getContentValues(event);
         mDataBase.update(EventsTable.NAME, values, "_id = ?",
                 new String[]{Integer.toString(eventId)});
@@ -130,49 +148,8 @@ public class EventManager {
         return distance*1000;
     }
 
-//    public void sortOrder(double lat, double lng){
-//        String order = "(( "+lat+" - "+EventsTable.Cols.LAT+ ") * " +
-//                "( "+lat+" - "+EventsTable.Cols.LAT+" ) + " +
-//                "( "+lng+" - "+EventsTable.Cols.LAT+" ) * " +
-//                "( "+lng+" - "+EventsTable.Cols.LAT+" ))";
-//
-//        //gets the nearest event
-//        Cursor cursor1 =  mDataBase.rawQuery("SELECT * FROM " + EventsTable.NAME + " ORDER BY " + order +" ASC", null);
-//
-//        EventCursorWrapper cursor = new EventCursorWrapper(cursor1);
-//
-//        //check if any events were found
-//        if(cursor.moveToFirst()){
-//            while (!cursor.isAfterLast()){
-//
-//                Event event = cursor.getEventDetails();
-//
-//                Log.d(TAG, "Ordered DB"+event.toString());
-//
-//                cursor.moveToNext();
-//            }
-//            cursor.close();
-//            return;
-//        }
-//        else {
-//            cursor.close();
-//            return;
-//        }
-//    }
-
     public void checkForEvents(Location location){
-        //sort the database with the nearest event at the top
-//        String order = "(( "+location.getLatitude()+" - "+EventsTable.Cols.LAT+ ") * " +
-//                       "( "+location.getLatitude()+" - "+EventsTable.Cols.LAT+" ) + " +
-//                       "( "+location.getLongitude()+" - "+EventsTable.Cols.LAT+" ) * " +
-//                       "( "+location.getLongitude()+" - "+EventsTable.Cols.LAT+" ))";
-
-        //gets the nearest event
-        //Cursor cursor1 =  mDataBase.rawQuery("SELECT * FROM " + EventsTable.NAME + " ORDER BY " + order+" ASC LIMIT 1", null);
-        String nearestId = "";
-        double smallestDistance = 0.0;
         EventCursorWrapper cursor = queryEvents(null,null);
-        //sortOrder(location.getLatitude(),location.getLongitude());
         //check if any events were found
         if(cursor.moveToFirst()){
             while (!cursor.isAfterLast()){
@@ -180,27 +157,23 @@ public class EventManager {
                 Event event = cursor.getEventDetails();
                 curr = event.getTitle();
                 double radius = (double) event.getRadius();
-                checkdistance(location.getLatitude(), location.getLongitude(), event.getLatitude(), event.getLongitude(), radius);
+//                checkdistance(location.getLatitude(), location.getLongitude(), event.getLatitude(), event.getLongitude(), radius);
                 Log.d(TAG, "Chosen event:" + event.toString());
                 double currentDistance = checkdistance(location.getLatitude(),location.getLongitude(),event.getLatitude(),event.getLongitude(),radius);
-
-                if(smallestDistance <= 0.0){
-                    smallestDistance = currentDistance;
-                    nearestId = event.getTitle();
-                }
-                else if(currentDistance <= smallestDistance){
-                    smallestDistance = currentDistance;
-                    nearestId = event.getTitle();
-                }
 
                 if(currentDistance <= radius) {
 
                     Log.d(TAG, "Preforming event:"+event.toString());
-                    performEvent(event);
+                    if(event.getActive() == 1) {
+                        toggleActive(event);
+                        performEvent(event);
+                    }
+                }
+                else if(event.getActive() == 0){
+                    toggleActive(event);
                 }
                 cursor.moveToNext();
             }
-            Toast.makeText(mContext,"Nearest event: "+nearestId+" Distance: "+smallestDistance,Toast.LENGTH_SHORT).show();
             cursor.close();
             return;
         }
@@ -245,8 +218,24 @@ public class EventManager {
         }
     }
 
+    //This method returns a list of event objects.
+    public List<Event> getEventList(){
+        List<Event> eventList = new ArrayList<Event>();
+        EventCursorWrapper eventCursorWrapper = queryEvents(null, null);
+        try{
+            eventCursorWrapper.moveToFirst();
+            while(!eventCursorWrapper.isAfterLast()){
+                eventList.add(eventCursorWrapper.getEventDetails());
+                eventCursorWrapper.moveToNext();
+            }
+        }finally {
+            eventCursorWrapper.close();
+        }
+        return eventList;
+    }
+
     //This method constructs and a query and then queries the database
-    private EventCursorWrapper queryEvents(String whereClause, String[] whereArgs){
+    public EventCursorWrapper queryEvents(String whereClause, String[] whereArgs){
         Cursor cursor = mDataBase.query(
                 EventsTable.NAME,
                 null, //select all columns

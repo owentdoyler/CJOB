@@ -33,4 +33,7 @@
         Your email will not send if this setting is off.</string>
     <string name="map_title">Choose A Location</string>
     <string name="event_type_title">Choose An Event</string>
+    <string name="title_activity_home_screen">HomeScreen</string>
+
+    <string name="hello_world">Hello world!</string>
 </resources>
