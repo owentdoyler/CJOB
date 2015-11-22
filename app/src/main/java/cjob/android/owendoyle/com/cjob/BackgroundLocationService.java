@@ -56,7 +56,7 @@ public class BackgroundLocationService extends Service implements GoogleApiClien
             public void onConnected(Bundle bundle) {
                 Log.d(TAG,">>>>>>>>>>>>>>>>>>>>>>>> Service created <<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 
-                //set up a location request to continually listen form location updates
+                //set up a location request to continually listen for location updates
                 mLocationRequest = LocationRequest.create();
                 mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
                 mLocationRequest.setInterval(5000);

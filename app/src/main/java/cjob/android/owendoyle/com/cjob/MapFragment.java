@@ -62,7 +62,7 @@ public class MapFragment extends SupportMapFragment {
     private Location mLastLocation;
     private Marker mSelectedMarker = null;
     private SQLiteDatabase mDataBase;
-
+    private EventManager eventManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -212,19 +212,22 @@ public class MapFragment extends SupportMapFragment {
 
     @Override
     public void onStop() {
-//        LocationServices.FusedLocationApi.removeLocationUpdates(mClient, mLocationListener);
         mClient.disconnect();
         super.onStop();
     }
 
+    //this method loads any events that are in the database already
     private void loadEvents(){
-        EventCursorWrapper cursor = queryEvents(null, null);
+        EventCursorWrapper cursor = eventManager.queryEvents(null, null);
         if (cursor.moveToFirst()){
             while (!cursor.isAfterLast()){
                 Event event = cursor.getEventDetails();
                 LatLng latLng = new LatLng(event.getLatitude(), event.getLongitude());
+                //create the marker
                 Marker marker = mMap.addMarker(new MarkerOptions().position(latLng).title(event.getTitle()).snippet(event.getAddress()));
+                //add event radius circle to the map
                 Circle circle = mMap.addCircle(new CircleOptions().center(latLng).radius(event.getRadius()).strokeColor(Color.BLUE).strokeWidth(5f));
+                //these maps below keep track of the various components attached to the map
                 mMarkerEvents.put(marker, true);
                 mMarkerEventIDs.put(marker, event.getId());
                 mMarkerEventCircles.put(marker, circle);
@@ -234,19 +237,7 @@ public class MapFragment extends SupportMapFragment {
         cursor.close();
     }
 
-    private EventCursorWrapper queryEvents(String whereClause, String[] whereArgs){
-        Cursor cursor = mDataBase.query(
-                EventsDbSchema.EventsTable.NAME,
-                null, //select all columns
-                whereClause,
-                whereArgs,
-                null, //groupBy
-                null, //having
-                null //orderBy
-        );
-        return new EventCursorWrapper(cursor);
-    }
-
+    //this method gets the address for a specific location
     private String getAddress(LatLng latLng){
         String address = "";
         Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
@@ -268,7 +259,7 @@ public class MapFragment extends SupportMapFragment {
 
     private void deleteEvent(int id){
         mDataBase.delete(EventsDbSchema.EventsTable.NAME, "_id = ?", new String[]{Integer.toString(id)});
-        EventCursorWrapper cursor = queryEvents(null, null);
+        EventCursorWrapper cursor = eventManager.queryEvents(null, null);
         if (cursor.getCount() == 0){
             Intent i = new Intent(getActivity(), BackgroundLocationService.class);
             getActivity().stopService(i);
