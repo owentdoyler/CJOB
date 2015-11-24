@@ -36,6 +36,8 @@
     <string name="title_activity_home_screen">HomeScreen</string>
     <string name="home_create_event_button">Create Event</string>
     <string name="home_view_events_button">View Events</string>
+    <string name="event_list_view_map">View Map</string>
+    <string name="active_events">Active Events</string>
 
     <string name="hello_world">Hello world!</string>
 </resources>

@@ -15,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ public class EventListFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
-            case R.id.action_event_details:
+            case R.id.event_list_view_map:
                 Intent i = new Intent(getActivity(), MapActivity.class);
                 startActivity(i);
         }
@@ -52,7 +53,7 @@ public class EventListFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_marker_event, menu);
+        inflater.inflate(R.menu.menu_event_list, menu);
     }
 
 
@@ -102,17 +103,26 @@ public class EventListFragment extends Fragment {
         CardView cv;
         TextView eventTitle;
         TextView eventLocation;
+        ImageView eventSymbol;
+        View currentView;
 
         EventViewHolder(View itemView){
             super(itemView);
+            currentView = itemView;
             cv = (CardView)itemView.findViewById(R.id.cv);
+            eventSymbol = (ImageView) itemView.findViewById(R.id.event_image);
             eventTitle = (TextView)itemView.findViewById(R.id.event_title);
             eventLocation = (TextView)itemView.findViewById(R.id.event_location);
         }
 
-        public void bindEvent(String title, String address){
+        public void bindEvent(int eventSymbolID, String title, String address, String lat, String lng){
+            eventSymbol.setImageResource(eventSymbolID);
             eventTitle.setText(title);
             eventLocation.setText(address);
+            new MapImageMaker((ImageView) currentView.findViewById(R.id.map_image))
+                    .execute("https://maps.googleapis.com/maps/api/staticmap?" +
+                            "center="+lat+","+lng+"&zoom=16&size=300x300" +
+                            "&markers="+lat+","+lng+"&maptype=normal");
         }
 
         @Override
@@ -141,14 +151,38 @@ public class EventListFragment extends Fragment {
         public void onBindViewHolder(EventViewHolder holder, int position) {
             String address;
             String eventTitle;
-//            String eventType;
-//            Event event;
+            int eventType;
+            int eventSymbolId;
+            String latitide;
+            String longitude;
+
+            latitide = Double.toString(eventList.get(position).getLatitude());
+            longitude = Double.toString(eventList.get(position).getLongitude());
 
             address = eventList.get(position).getAddress();
+            address = address.replace("\n"," ");
             eventTitle = eventList.get(position).getTitle();
-//            eventType = eventList.get(position).getType();
+            eventType = Integer.parseInt(eventList.get(position).getType());
+            switch (eventType){
+                case EventManager.ALARM:
+                    eventSymbolId = R.drawable.ic_alarm;
+                    break;
+                case EventManager.NOTIFICATION:
+                    eventSymbolId = R.drawable.ic_speaker_icon;
+                    break;
+                case EventManager.EMAIL:
+                    eventSymbolId = R.drawable.ic_gmail_icon;
+                    break;
+                case EventManager.SMS:
+                    eventSymbolId = R.drawable.ic_sms_icon;
+                    break;
+                default:
+                    eventSymbolId = R.drawable.ic_speaker_icon;
+                    break;
+            }
 
-            holder.bindEvent(eventTitle, address);
+
+            holder.bindEvent(eventSymbolId,eventTitle, address, latitide, longitude);
         }
 
         @Override
