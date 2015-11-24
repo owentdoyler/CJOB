@@ -10,7 +10,7 @@ import cjob.android.owendoyle.com.cjob.events.Event;
  * Student Number: 12453618
  * File: EventCursorWrapper.java
  *
- * This class makes it easy to get the dat required from a cursor object
+ * This class makes it easy to get the data required from a cursor object
  */
 public class EventCursorWrapper extends CursorWrapper {
     public EventCursorWrapper(Cursor cursor){

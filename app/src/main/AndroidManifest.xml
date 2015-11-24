@@ -22,7 +22,8 @@
 
         <activity
             android:name=".MapActivity"
-            android:label="@string/map_title" >
+            android:label="@string/map_title"
+            android:parentActivityName=".HomeScreenActivity">
         </activity>
         <activity
             android:name=".EventTypeActivity"

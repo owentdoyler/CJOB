@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  * Student Number: 12453618
  * File: EventsDatabaseHelper.java
  *
- * This class manages refrences to the database
+ * This class manages creating and referencing to the database
  */
 public class EventsDatabaseHelper extends SQLiteOpenHelper {
     private static final int VERSION = 1;

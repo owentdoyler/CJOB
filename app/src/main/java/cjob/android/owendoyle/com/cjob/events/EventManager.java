@@ -33,8 +33,6 @@ import cjob.android.owendoyle.com.cjob.R;
 
 
 /**
- * Name: Owen Doyle
- * Student Number: 12453618
  * File: EventManager.java.
  *
  * This class manages the events that are set.
@@ -59,10 +57,12 @@ public class EventManager {
 
     public EventManager(Context context){
         mContext = context;
+
         //get reference to the database
         mDataBase = new EventsDatabaseHelper(mContext.getApplicationContext()).getWritableDatabase();
     }
 
+    //this method creates the content values object that is used to add data to the database
     private static ContentValues getContentValues(Event event){
         ContentValues values = new ContentValues();
         values.put(EventsTable.Cols.LAT,event.getLatitude().toString());
@@ -85,11 +85,13 @@ public class EventManager {
         return values;
     }
 
+    //adds an event to the database
     public void addEvent(Event event){
         ContentValues values = getContentValues(event);
         mDataBase.insert(EventsTable.NAME, null, values);
     }
 
+    //delets an event from the database
     public void deleteEvent(Event event){
         int eventId = event.getId();
         mDataBase.delete(EventsTable.NAME, "_id = ?", new String[]{Integer.toString(eventId)});
@@ -100,6 +102,7 @@ public class EventManager {
         }
         cursor.close();
     }
+
 
     public void updateEvent(Event event) {
         int eventId = event.getId();
@@ -261,7 +264,7 @@ public class EventManager {
         Uri path =  Uri.parse("android.resource://" + "cjob.android.owendoyle.com.cjob" + "/" + R.raw.notification1);
         String text = event.getText();
         NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext)
-                .setSmallIcon(R.mipmap.ic_testicon)
+                .setSmallIcon(R.mipmap.ic_name_small)
                 .setContentTitle(event.getTitle())
                 .setContentText(text);
 
