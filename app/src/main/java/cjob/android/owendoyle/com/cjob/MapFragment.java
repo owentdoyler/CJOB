@@ -22,6 +22,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
@@ -68,6 +69,7 @@ public class MapFragment extends SupportMapFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mDataBase = new EventsDatabaseHelper(getActivity().getApplicationContext()).getWritableDatabase();
+        eventManager  = new EventManager(getActivity());
         setHasOptionsMenu(true);
         setupClient();
     }
@@ -100,7 +102,8 @@ public class MapFragment extends SupportMapFragment {
                 startActivity(intent);
                 return true;
             case R.id.action_event_details:
-                //TODO Launch event details activity
+                Intent i = new Intent(getActivity(), EventListActivity.class);
+                startActivity(i);
                 return true;
             case R.id.action_delete_event:
                 mSelectedMarker.remove();
@@ -199,14 +202,6 @@ public class MapFragment extends SupportMapFragment {
     public void onStart() {
         super.onStart();
         mClient.connect();
-        Intent i = getActivity().getIntent();
-        String refresh = i.getStringExtra(EventManager.EXTRA_REFRESH);
-        if (refresh != null){
-            if (refresh.equals(REFRESH)){
-                setUpMap();
-            }
-        }
-
         setUpMap();
     }
 
@@ -219,12 +214,20 @@ public class MapFragment extends SupportMapFragment {
     //this method loads any events that are in the database already
     private void loadEvents(){
         EventCursorWrapper cursor = eventManager.queryEvents(null, null);
+        Intent i = getActivity().getIntent();
+        int eventID = i.getIntExtra(EventListFragment.EXTRA_EVENT_ID, -1);
         if (cursor.moveToFirst()){
             while (!cursor.isAfterLast()){
                 Event event = cursor.getEventDetails();
                 LatLng latLng = new LatLng(event.getLatitude(), event.getLongitude());
                 //create the marker
                 Marker marker = mMap.addMarker(new MarkerOptions().position(latLng).title(event.getTitle()).snippet(event.getAddress()));
+                //display the marker info window if the map has been loaded from clicking on an event in the event list
+                if (eventID != -1){
+                    if (event.getId() == eventID){
+                        marker.showInfoWindow();
+                    }
+                }
                 //add event radius circle to the map
                 Circle circle = mMap.addCircle(new CircleOptions().center(latLng).radius(event.getRadius()).strokeColor(Color.BLUE).strokeWidth(5f));
                 //these maps below keep track of the various components attached to the map
