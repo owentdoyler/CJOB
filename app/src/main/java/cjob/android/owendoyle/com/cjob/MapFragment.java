@@ -68,6 +68,7 @@ public class MapFragment extends SupportMapFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mDataBase = new EventsDatabaseHelper(getActivity().getApplicationContext()).getWritableDatabase();
+        eventManager = new EventManager(getActivity());
         setHasOptionsMenu(true);
         setupClient();
     }
