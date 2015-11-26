@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -103,8 +102,7 @@ public class BackgroundLocationService extends Service implements GoogleApiClien
     private boolean servicesAvailable(){
         //check if google play services are available on the device
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-        if (ConnectionResult.SUCCESS == resultCode) return true;
-        else return false;
+        return ConnectionResult.SUCCESS == resultCode;
     }
 
     @Override

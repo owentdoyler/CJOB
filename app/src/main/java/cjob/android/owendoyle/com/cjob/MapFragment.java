@@ -1,15 +1,12 @@
 package cjob.android.owendoyle.com.cjob;
 
-import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -22,7 +19,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
@@ -53,7 +49,6 @@ public class MapFragment extends SupportMapFragment {
     public static final String EXTRA_LATITUDE = PACKAGE+"latitude";
     public static final String EXTRA_LONGITUDE = PACKAGE+"longitude";
     public static final String EXTRA_ADDRESS = PACKAGE+"address";
-    public static final String REFRESH = "refresh";
 
     private HashMap<Marker, Boolean> mMarkerEvents = new HashMap<>();
     private HashMap<Marker, Integer> mMarkerEventIDs = new HashMap<>();
