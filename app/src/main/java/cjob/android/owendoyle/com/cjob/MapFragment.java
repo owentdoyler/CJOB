@@ -1,15 +1,12 @@
 package cjob.android.owendoyle.com.cjob;
 
-import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -52,7 +49,6 @@ public class MapFragment extends SupportMapFragment {
     public static final String EXTRA_LATITUDE = PACKAGE+"latitude";
     public static final String EXTRA_LONGITUDE = PACKAGE+"longitude";
     public static final String EXTRA_ADDRESS = PACKAGE+"address";
-    public static final String REFRESH = "refresh";
 
     private HashMap<Marker, Boolean> mMarkerEvents = new HashMap<>();
     private HashMap<Marker, Integer> mMarkerEventIDs = new HashMap<>();
@@ -68,7 +64,7 @@ public class MapFragment extends SupportMapFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mDataBase = new EventsDatabaseHelper(getActivity().getApplicationContext()).getWritableDatabase();
-        eventManager = new EventManager(getActivity());
+        eventManager  = new EventManager(getActivity());
         setHasOptionsMenu(true);
         setupClient();
     }
@@ -101,7 +97,8 @@ public class MapFragment extends SupportMapFragment {
                 startActivity(intent);
                 return true;
             case R.id.action_event_details:
-                //TODO Launch event details activity
+                Intent i = new Intent(getActivity(), EventListActivity.class);
+                startActivity(i);
                 return true;
             case R.id.action_delete_event:
                 mSelectedMarker.remove();
@@ -200,14 +197,6 @@ public class MapFragment extends SupportMapFragment {
     public void onStart() {
         super.onStart();
         mClient.connect();
-        Intent i = getActivity().getIntent();
-        String refresh = i.getStringExtra(EventManager.EXTRA_REFRESH);
-        if (refresh != null){
-            if (refresh.equals(REFRESH)){
-                setUpMap();
-            }
-        }
-
         setUpMap();
     }
 
@@ -220,12 +209,20 @@ public class MapFragment extends SupportMapFragment {
     //this method loads any events that are in the database already
     private void loadEvents(){
         EventCursorWrapper cursor = eventManager.queryEvents(null, null);
+        Intent i = getActivity().getIntent();
+        int eventID = i.getIntExtra(EventListFragment.EXTRA_EVENT_ID, -1);
         if (cursor.moveToFirst()){
             while (!cursor.isAfterLast()){
                 Event event = cursor.getEventDetails();
                 LatLng latLng = new LatLng(event.getLatitude(), event.getLongitude());
                 //create the marker
                 Marker marker = mMap.addMarker(new MarkerOptions().position(latLng).title(event.getTitle()).snippet(event.getAddress()));
+                //display the marker info window if the map has been loaded from clicking on an event in the event list
+                if (eventID != -1){
+                    if (event.getId() == eventID){
+                        marker.showInfoWindow();
+                    }
+                }
                 //add event radius circle to the map
                 Circle circle = mMap.addCircle(new CircleOptions().center(latLng).radius(event.getRadius()).strokeColor(Color.BLUE).strokeWidth(5f));
                 //these maps below keep track of the various components attached to the map

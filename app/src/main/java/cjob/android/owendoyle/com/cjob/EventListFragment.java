@@ -33,6 +33,7 @@ public class EventListFragment extends Fragment {
     private static final  String ARG_EVENT_TYPE = "event_type";
     private static final String ARG_ADDRESS = "address";
     private static final String ARG_EVENT_TITLE = "title";
+    public static final String EXTRA_EVENT_ID = "cjob.android.owendoyle.com.cjob.EVENT_ID";
     private RecyclerView mEventListRecyclerView;
     private EventListAdapter mAdapter;
 //    private String type;
@@ -99,12 +100,13 @@ public class EventListFragment extends Fragment {
         return fragment;
     }
 
-    public class EventViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class EventViewHolder extends RecyclerView.ViewHolder{
         CardView cv;
         TextView eventTitle;
         TextView eventLocation;
         ImageView eventSymbol;
         View currentView;
+        int eventID;
 
         EventViewHolder(View itemView){
             super(itemView);
@@ -115,7 +117,7 @@ public class EventListFragment extends Fragment {
             eventLocation = (TextView)itemView.findViewById(R.id.event_location);
         }
 
-        public void bindEvent(int eventSymbolID, String title, String address, String lat, String lng){
+        public void bindEvent(int eventSymbolID, String title, String address, String lat, String lng, int eventID){
             eventSymbol.setImageResource(eventSymbolID);
             eventTitle.setText(title);
             eventLocation.setText(address);
@@ -124,15 +126,11 @@ public class EventListFragment extends Fragment {
                             "center="+lat+","+lng+"&zoom=16&size=300x300" +
                             "&markers="+lat+","+lng+"&maptype=normal");
         }
-
-        @Override
-        public void onClick(View view) {
-            //Need to hook this up to the map with an intent.
-        }
     }
 
     private class EventListAdapter extends RecyclerView.Adapter<EventViewHolder>{
         List<Event> eventList = new ArrayList<>();
+
 
         //Write constructor where you instantiate list to hold events.
         EventListAdapter(List<Event> eventListArg){
@@ -142,7 +140,16 @@ public class EventListFragment extends Fragment {
         @Override
         public EventViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
-            View view = layoutInflater.inflate(R.layout.fragment_event_list, parent, false);
+            final View view = layoutInflater.inflate(R.layout.fragment_event_list, parent, false);
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = mEventListRecyclerView.getChildLayoutPosition(view);
+                    Intent i = new Intent(getActivity(), MapActivity.class);
+                    i.putExtra(EXTRA_EVENT_ID, eventList.get(position).getId());
+                    startActivity(i);
+                }
+            });
             return new EventViewHolder(view);
         }
 
@@ -155,10 +162,11 @@ public class EventListFragment extends Fragment {
             int eventSymbolId;
             String latitide;
             String longitude;
+            int eventID;
 
             latitide = Double.toString(eventList.get(position).getLatitude());
             longitude = Double.toString(eventList.get(position).getLongitude());
-
+            eventID = eventList.get(position).getId();
             address = eventList.get(position).getAddress();
             address = address.replace("\n"," ");
             eventTitle = eventList.get(position).getTitle();
@@ -182,7 +190,7 @@ public class EventListFragment extends Fragment {
             }
 
 
-            holder.bindEvent(eventSymbolId,eventTitle, address, latitide, longitude);
+            holder.bindEvent(eventSymbolId,eventTitle, address, latitide, longitude, eventID);
         }
 
         @Override

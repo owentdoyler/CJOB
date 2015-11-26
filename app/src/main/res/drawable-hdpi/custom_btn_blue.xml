@@ -3,24 +3,24 @@
     <item android:state_pressed="true" >
         <shape android:shape="rectangle"  >
             <corners android:radius="20dip" />
-            <stroke android:width="1dip" android:color="#0044ED" />
-            <gradient  android:angle="-90"  android:startColor="#004492" android:endColor="#0000ED"  />
+            <stroke android:width="1dip" android:color="@color/base_color_of_app" />
+            <gradient  android:angle="-90"  android:startColor="@color/button_darker" android:endColor="@color/base_color_of_app"  />
             <stroke android:width="5px" android:color="#000000" />
         </shape>
     </item>
     <item android:state_focused="true">
         <shape android:shape="rectangle"  >
             <corners android:radius="20dip" />
-            <stroke android:width="1dip" android:color="#0014ED" />
-            <solid  android:color="#0044ED"/>
+            <stroke android:width="1dip" android:color="@color/base_color_of_app" />
+            <solid  android:color="@color/base_color_of_app"/>
             <stroke android:width="5px" android:color="#000000" />
         </shape>
     </item>
     <item >
         <shape android:shape="rectangle"  >
             <corners android:radius="20dip" />
-            <stroke android:width="1dip" android:color="#0070ED" />
-            <gradient  android:angle="-90"  android:startColor="#0050ED" android:endColor="#0044ED" />
+            <stroke android:width="1dip" android:color="@color/base_color_of_app" />
+            <gradient  android:angle="-90"  android:startColor="@color/button_darker" android:endColor="@color/base_color_of_app" />
             <stroke android:width="5px" android:color="#000000" />
         </shape>
     </item>
