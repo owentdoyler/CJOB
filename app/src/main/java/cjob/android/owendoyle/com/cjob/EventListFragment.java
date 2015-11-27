@@ -1,3 +1,7 @@
+/*
+* This fragments holds the list of the current active events
+* */
+
 package cjob.android.owendoyle.com.cjob;
 
 import android.content.Intent;
@@ -63,10 +67,7 @@ public class EventListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-//        type = (String) getArguments().getString(ARG_EVENT_TYPE);
-        //title = (String) getArguments().getString(ARG_EVENT_TITLE);
-        //address = (String) getArguments().getString(ARG_ADDRESS);
-    }
+   }
 
     @Nullable
     @Override
@@ -79,26 +80,14 @@ public class EventListFragment extends Fragment {
         return v;
     }
 
+    //updates the list of events when needed
     public void updateUI(){
-//        EventCursorWrapper eventCursorWrapper = eventManager.queryEvents(null, null);
-//        if(eventCursorWrapper.moveToFirst()) {
-//            mAdapter = new EventListAdapter(eventCursorWrapper);
-//        }
+
         List<Event> eventList = eventManager.getEventList();
         mAdapter = new EventListAdapter(eventList);
         mEventListRecyclerView.setAdapter(mAdapter);
     }
 
-    public static EventTypeFragment newInstance(String type, String title, String address) {
-        Bundle args = new Bundle();
-        args.putString(ARG_EVENT_TYPE, type);
-        args.putString(ARG_EVENT_TITLE, title);
-        args.putString(ARG_ADDRESS, address);
-
-        EventTypeFragment fragment = new EventTypeFragment();
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     public class EventViewHolder extends RecyclerView.ViewHolder{
         CardView cv;
@@ -121,6 +110,8 @@ public class EventListFragment extends Fragment {
             eventSymbol.setImageResource(eventSymbolID);
             eventTitle.setText(title);
             eventLocation.setText(address);
+
+            // this method gets an image from the static map API at a given location
             new MapImageMaker((ImageView) currentView.findViewById(R.id.map_image))
                     .execute("https://maps.googleapis.com/maps/api/staticmap?" +
                             "center="+lat+","+lng+"&zoom=16&size=300x300" +
@@ -141,6 +132,7 @@ public class EventListFragment extends Fragment {
         public EventViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
             final View view = layoutInflater.inflate(R.layout.fragment_event_list, parent, false);
+            //opens the map with the clicked event highlighted
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -153,7 +145,7 @@ public class EventListFragment extends Fragment {
             return new EventViewHolder(view);
         }
 
-        //set data here.
+        //sets the data for each event here.
         @Override
         public void onBindViewHolder(EventViewHolder holder, int position) {
             String address;

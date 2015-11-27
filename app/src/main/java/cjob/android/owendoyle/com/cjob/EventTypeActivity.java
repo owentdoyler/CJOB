@@ -1,3 +1,6 @@
+/*
+* A simple activity that hosts the EventTypeFragment
+* */
 package cjob.android.owendoyle.com.cjob;
 
 import android.content.Context;
@@ -7,8 +10,10 @@ import android.support.v4.app.Fragment;
 /**
  * Created by Owner on 28/10/2015.
  */
+//extends the abstract SingleFragmentActivity
 public class EventTypeActivity extends SingleFragmentActivity {
 
+    // makes it easier to put extras on intents the launch this activity
     public static Intent newIntent(Context packageContext,double latitude, double longitude, String address ) {
         Intent intent = new Intent(packageContext, EventTypeActivity.class);
         intent.putExtra(MapFragment.EXTRA_LATITUDE, latitude);
@@ -17,6 +22,7 @@ public class EventTypeActivity extends SingleFragmentActivity {
         return intent;
     }
 
+    //creates the fragment for this activity with arguments
     @Override
     protected Fragment createFragment() {
         double defaultValue = 0.0;

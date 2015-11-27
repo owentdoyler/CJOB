@@ -1,3 +1,8 @@
+/*
+* This is the DialogFragment for the dialog the prompts the user
+* to enter their email and password for the email event
+* */
+
 package cjob.android.owendoyle.com.cjob;
 
 import android.app.Activity;
@@ -20,6 +25,7 @@ import java.sql.Date;
 /**
  * Created by Owner on 05/11/2015.
  */
+
 public class EmailPasswordFragment extends DialogFragment {
 
     public static final String EXTRA_EMAIL = "com.email";
@@ -32,6 +38,8 @@ public class EmailPasswordFragment extends DialogFragment {
     private EditText mPassword;
     private Button mCreateButton;
 
+
+    // wires up the dialog fragment components
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
         View v = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_emailpassword,null);
@@ -78,6 +86,7 @@ public class EmailPasswordFragment extends DialogFragment {
         dialog.setTitle(R.string.dialog_emailpassword_title);
         mCreateButton = (Button) v.findViewById(R.id.dialog_create_button);
         mCreateButton.setOnClickListener(new View.OnClickListener() {
+            //makes sure user did not leave fields blank
             @Override
             public void onClick(View view) {
                 if (email != "" && pass != "") {
@@ -92,6 +101,7 @@ public class EmailPasswordFragment extends DialogFragment {
         return dialog.create();
     }
 
+    //sends the result back to its calling activity
     private void sendResult(int resultCode, String email, String pass) {
         if (getTargetFragment() == null) {
             return;

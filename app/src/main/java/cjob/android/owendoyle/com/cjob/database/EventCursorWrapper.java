@@ -1,3 +1,6 @@
+/*
+* Extends the cursor wrapper class to return an event object
+* */
 package cjob.android.owendoyle.com.cjob.database;
 
 import android.database.Cursor;

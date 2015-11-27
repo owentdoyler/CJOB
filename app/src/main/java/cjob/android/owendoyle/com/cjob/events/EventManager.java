@@ -1,3 +1,9 @@
+/*
+* The event manager keeps track of all the events and
+ * performs events when they are triggered. It also provides
+ * methods for querying the database.
+* */
+
 package cjob.android.owendoyle.com.cjob.events;
 
 import android.app.Activity;
@@ -103,7 +109,7 @@ public class EventManager {
         cursor.close();
     }
 
-
+    //updates an event in the database
     public void updateEvent(Event event) {
         int eventId = event.getId();
         ContentValues values = getContentValues(event);
@@ -111,6 +117,7 @@ public class EventManager {
                 new String[]{Integer.toString(eventId)});
     }
 
+    //switch the event to either active or inactive
     public void toggleActive(Event event){
         int eventId = event.getId();
         int active = event.getActive();
@@ -126,6 +133,7 @@ public class EventManager {
                 new String[]{Integer.toString(eventId)});
     }
 
+    //logs all the events in the database
     public void logEvents(){
         EventCursorWrapper cursor = queryEvents(null, null);
         try {
@@ -151,6 +159,7 @@ public class EventManager {
         return distance*1000;
     }
 
+    //check your location is within any of the event radius'
     public void checkForEvents(Location location){
         EventCursorWrapper cursor = queryEvents(null,null);
         //check if any events were found
@@ -160,18 +169,17 @@ public class EventManager {
                 Event event = cursor.getEventDetails();
                 curr = event.getTitle();
                 double radius = (double) event.getRadius();
-//                checkdistance(location.getLatitude(), location.getLongitude(), event.getLatitude(), event.getLongitude(), radius);
-                Log.d(TAG, "Chosen event:" + event.toString());
                 double currentDistance = checkdistance(location.getLatitude(),location.getLongitude(),event.getLatitude(),event.getLongitude(),radius);
 
+                //if inside event radius
                 if(currentDistance <= radius) {
 
-                    Log.d(TAG, "Preforming event:"+event.toString());
+                    //if the event is active
                     if(event.getActive() == 1) {
                         toggleActive(event);
                         performEvent(event);
                     }
-                }
+                }   //if outside the radius and the event is not active
                 else if(event.getActive() == 0){
                     toggleActive(event);
                 }
@@ -186,34 +194,31 @@ public class EventManager {
         }
     }
 
+    //executes the given event
     private void performEvent(Event event){
         switch (Integer.parseInt(event.getType())){
             case NOTIFICATION:
                 sendNotification(event);
                 if(event.getDeleteOnComplete() == 1){
                     deleteEvent(event);
-                    logEvents();
                 }
                 return;
             case SMS:
                 sendSms(event);
                 if(event.getDeleteOnComplete() == 1){
                     deleteEvent(event);
-                    logEvents();
                 }
                 return;
             case EMAIL:
                 new SendEmail().execute(event);
                 if(event.getDeleteOnComplete() == 1){
                     deleteEvent(event);
-                    logEvents();
                 }
                 return;
             case ALARM:
                 setOffAlarm();
                 if(event.getDeleteOnComplete() == 1){
                     deleteEvent(event);
-                    logEvents();
                 }
                 return;
             default:
@@ -260,6 +265,7 @@ public class EventManager {
         return whereArgs;
     }
 
+    //sets up a notification
     private void sendNotification(Event event){
         Uri path =  Uri.parse("android.resource://" + "cjob.android.owendoyle.com.cjob" + "/" + R.raw.notification1);
         String text = event.getText();
@@ -318,7 +324,7 @@ public class EventManager {
             }
         }, new IntentFilter(SENT));
 
-        //---when the SMS has been delivered---
+        //when the SMS has been delivered
         mContext.registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context arg0, Intent arg1) {
@@ -340,6 +346,7 @@ public class EventManager {
         SmsManager sms = SmsManager.getDefault();
         sms.sendTextMessage(event.getContactNumber(), null, event.getText(), sentPI, deliveredPI);
     }
+
 
     private void setOffAlarm(){
         Vibrator vibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);

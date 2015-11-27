@@ -1,3 +1,7 @@
+/*
+* this is the simple home screen fragment
+* */
+
 package cjob.android.owendoyle.com.cjob;
 
 import android.content.Intent;
@@ -23,6 +27,7 @@ public class HomeScreenFragment extends Fragment {
         super.onCreate(savedInsatnceState);
     }
 
+    //inflates the home screen layout and wires up the buttons
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_home,container,false);

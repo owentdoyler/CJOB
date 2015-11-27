@@ -1,3 +1,9 @@
+/*
+* A fragment that inflates different views depending on the event
+* type that is chosen. Here we get the event details from the user
+* and create the new event.
+* */
+
 package cjob.android.owendoyle.com.cjob;
 
 import android.content.Intent;
@@ -67,6 +73,7 @@ public class SettingsFragment extends Fragment {
         setHasOptionsMenu(true);
     }
 
+    //inflates the appropriate view for the event type
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         mEventManager = new EventManager(getActivity());
@@ -117,6 +124,7 @@ public class SettingsFragment extends Fragment {
         inflater.inflate(R.menu.fragment_settings_menu, menu);
     }
 
+    //preforms check when create event is pressed
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -142,18 +150,18 @@ public class SettingsFragment extends Fragment {
         }
     }
 
+    //adds the event to the database, goes back to the map and stats the location service
     private void createEvent(){
         mEventManager.addEvent(newEvent);
-        mEventManager.logEvents();
         Toast.makeText(getActivity(),R.string.event_created_toast,Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(getActivity(),MapActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         Intent i = new Intent(getActivity(),BackgroundLocationService.class);
         getActivity().startService(i);
-
     }
 
+    //asks the user for their email and password foe the email event
     private void createEmailEvent(){
         FragmentManager manager = getFragmentManager();
         EmailPasswordFragment dialog = new EmailPasswordFragment();
@@ -161,7 +169,7 @@ public class SettingsFragment extends Fragment {
         dialog.show(manager, DIALOG_EMIAL);
     }
 
-
+    //allows arguments to be passed to the settings fragment
     public static SettingsFragment newInstance(double latitude, double longitude, String address, int event_type) {
         Bundle args = new Bundle();
         args.putDouble(ARG_LATITUDE, latitude);
@@ -174,6 +182,7 @@ public class SettingsFragment extends Fragment {
         return fragment;
     }
 
+    //sets up the title field
     private void editTitle(View v){
         mEventTitle = (EditText) v.findViewById(R.id.event_title_text);
         mEventTitle.addTextChangedListener(new TextWatcher() {
@@ -195,6 +204,7 @@ public class SettingsFragment extends Fragment {
         });
     }
 
+    //sets up the radius picker seekBar
     private void radiusPicker(View v){
         mRadiusBar = (SeekBar) v.findViewById(R.id.alarm_radius_seekbar);
         mRadiusBarProgress = (TextView) v.findViewById(R.id.seekbar_progress_text_view);
@@ -222,6 +232,7 @@ public class SettingsFragment extends Fragment {
         });
     }
 
+    //sets up the contact picker if needed
     private void chooseContact(View v){
         final Intent pickContact = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
         mChooseContactButton = (Button) v.findViewById(R.id.choose_contact_button);
@@ -233,6 +244,7 @@ public class SettingsFragment extends Fragment {
         });
     }
 
+    //sets up the email subject field and receiver field
     private void emailToSubject(View v){
         mEmailTo = (EditText) v.findViewById(R.id.event_email_to);
         mEmailSubject = (EditText) v.findViewById(R.id.event_email_subject);
@@ -273,6 +285,7 @@ public class SettingsFragment extends Fragment {
         });
     }
 
+    //sets up the message field
     private void textMessage(View v){
         mTextMessage = (EditText) v.findViewById(R.id.event_text_message);
         mTextMessage.addTextChangedListener(new TextWatcher() {
@@ -294,6 +307,7 @@ public class SettingsFragment extends Fragment {
         });
     }
 
+    //sets up the delete on complete check box
     private void deleteOnCompleteCheck(View v){
         mDeleteOnComplete = (CheckBox) v.findViewById(R.id.event_delete_on_complete);
         mDeleteOnComplete.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -310,8 +324,10 @@ public class SettingsFragment extends Fragment {
         });
     }
 
+    // gets the result from the corresponding intents
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //gets result from the contact picker
         if (requestCode == REQUEST_CONTACT && data != null) {
             Uri contactUri = data.getData();
             String[] queryFields = new String[] {
@@ -321,6 +337,7 @@ public class SettingsFragment extends Fragment {
 
             Cursor c = getActivity().getContentResolver().query(contactUri, queryFields, null, null, null);
             try{
+
                 if(c.getCount() == 0){
                     return;
                 }
@@ -331,12 +348,13 @@ public class SettingsFragment extends Fragment {
 
                 Cursor phones = getActivity().getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null,
                         ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + contactId, null, null);
+                // this gets the numbers returned for the contact chosen
                 while (phones.moveToNext()){
                     String number = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                     int type = phones.getInt(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
+                    //picks out the mobile number from the numbers returned
                     switch (type) {
                         case ContactsContract.CommonDataKinds.Phone.TYPE_HOME:
-                            // do something with the Home number here...
                             break;
                         case ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE:
                             mChooseContactButton.setText(reciever + ": " + number);
@@ -346,7 +364,6 @@ public class SettingsFragment extends Fragment {
                             newEvent.setContactNumber(number);
                             break;
                         case ContactsContract.CommonDataKinds.Phone.TYPE_WORK:
-                            // do something with the Work number here...
                             break;
                     }
                 }
@@ -357,6 +374,8 @@ public class SettingsFragment extends Fragment {
                 c.close();
             }
         }
+
+        //gets the result from the email password intent and creates the event
         else if(requestCode == REQUEST_EMAIL_PASSWORD){
             newEvent.setUserEmail(data.getStringExtra(EmailPasswordFragment.EXTRA_EMAIL));
             newEvent.setUserPassword(data.getStringExtra(EmailPasswordFragment.EXTRA_PASS));
@@ -364,6 +383,7 @@ public class SettingsFragment extends Fragment {
         }
     }
 
+    //ensures the sms event if completely filled out
     private boolean completeSmsEvent(){
         if(newEvent.getTitle() != null && newEvent.getTitle() != ""
                 && newEvent.getContact() != null && newEvent.getContact() != ""
@@ -375,6 +395,7 @@ public class SettingsFragment extends Fragment {
             return false;
     }
 
+    //ensures the email event if completely filled out
     private boolean completeEmailEvent(){
         if(newEvent.getTitle() != null && newEvent.getTitle() != ""
                 && newEvent.getEmail() != null && newEvent.getEmail() != ""
@@ -386,6 +407,7 @@ public class SettingsFragment extends Fragment {
             return false;
     }
 
+    //ensures the notification event if completely filled out
     private boolean completeNotificationEvent(){
         if(newEvent.getTitle() != null && newEvent.getTitle() != ""
                 && newEvent.getText() != null && newEvent.getText() != ""){

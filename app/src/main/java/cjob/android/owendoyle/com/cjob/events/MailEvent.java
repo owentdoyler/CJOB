@@ -1,3 +1,8 @@
+/*
+* This class sets up the email event.
+* this code was taken from http://www.jondev.net/articles/Sending_Emails_without_User_Intervention_(no_Intents)_in_Android
+* */
+
 package cjob.android.owendoyle.com.cjob.events;
 
 import java.util.Date;

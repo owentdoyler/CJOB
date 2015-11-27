@@ -1,3 +1,7 @@
+/*
+* A simple activity that hosts the SettingsFragment
+* */
+
 package cjob.android.owendoyle.com.cjob;
 
 import android.content.Context;
@@ -9,6 +13,7 @@ import android.support.v4.app.Fragment;
  */
 public class SettingsActivity extends SingleFragmentActivity {
 
+    // makes it easier to put extras on intents that launch this activity
     public static Intent newIntent(Context packageContext,double latitude, double longitude, String address, int event_type ) {
         Intent intent = new Intent(packageContext, SettingsActivity.class);
         intent.putExtra(MapFragment.EXTRA_LATITUDE, latitude);
@@ -18,6 +23,7 @@ public class SettingsActivity extends SingleFragmentActivity {
         return intent;
     }
 
+    //creates the fragment for this activity with arguments
     @Override
     protected Fragment createFragment() {
 

@@ -1,3 +1,7 @@
+/*
+* This class holds all the event information
+* */
+
 package cjob.android.owendoyle.com.cjob.events;
 
 import java.util.UUID;

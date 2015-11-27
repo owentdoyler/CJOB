@@ -1,3 +1,10 @@
+/*
+* This is the fragment for the eventTypeActivity
+* it shows the types of events the user can pick.
+* It uses a recyclerView to display the list.
+*
+* */
+
 package cjob.android.owendoyle.com.cjob;
 
 import android.content.Intent;
@@ -51,6 +58,7 @@ public class EventTypeFragment extends Fragment {
         return v;
     }
 
+    //updates the list when needed
     private void updateUI(){
         List<String> types = new ArrayList<String>();
         types.add("Alarm");
@@ -62,6 +70,7 @@ public class EventTypeFragment extends Fragment {
         mTypeRecyclerView.setAdapter(mAdapter);
     }
 
+    //allows arguments to be passed to the fragment
     public static EventTypeFragment newInstance(double latitude, double longitude, String address) {
         Bundle args = new Bundle();
         args.putDouble(ARG_LATITUDE, latitude);
@@ -73,11 +82,13 @@ public class EventTypeFragment extends Fragment {
         return fragment;
     }
 
+    //class required by the recyclerView
     private class EventTypeHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public TextView mEventType;
         public ImageView mEventImage;
         private int mCurrentEventType;
 
+        //sets up a new list item
         public EventTypeHolder(View itemView){
             super(itemView);
             itemView.setOnClickListener(this);
@@ -85,12 +96,14 @@ public class EventTypeFragment extends Fragment {
             mEventImage = (ImageView) itemView.findViewById(R.id.list_item_event_type_image);
         }
 
+        //puts the appropriate details in correct list element
         public void bindEvent(int eventType, int eventImageId, String eventName){
             mCurrentEventType = eventType;
             mEventType.setText(eventName);
             mEventImage.setImageResource(eventImageId);
         }
 
+        //launches the settings activity when clicked
         @Override
         public void onClick(View view) {
                 Intent intent = SettingsActivity.newIntent(getActivity(), getArguments().getDouble(ARG_LATITUDE),
@@ -99,9 +112,11 @@ public class EventTypeFragment extends Fragment {
         }
     }
 
+    //class required by recyclerView
     private class EventTypeAdapter extends RecyclerView.Adapter<EventTypeHolder>{
         private List<String> mEventTypes;
 
+        //gets the list of event types
         public EventTypeAdapter(List<String> types){
             mEventTypes = types;
         }
@@ -113,6 +128,7 @@ public class EventTypeFragment extends Fragment {
             return new EventTypeHolder(view);
         }
 
+        //sets the picture for each event and calls the bind view method
         @Override
         public void onBindViewHolder(EventTypeHolder holder, int position){
             String type = mEventTypes.get(position);
@@ -143,6 +159,7 @@ public class EventTypeFragment extends Fragment {
             holder.bindEvent(eventId,eventIcon,type);
         }
 
+        //gets the number of types in the list
         @Override
         public int getItemCount(){
             return mEventTypes.size();
