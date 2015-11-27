@@ -1,5 +1,5 @@
 /*
-* An abstract class that can be used by all activitys that
+* An abstract class that can be used by all activities that
 * host a single fragment
 * */
 

@@ -1,5 +1,6 @@
 /*
-* Extends the cursor wrapper class to return an event object
+* This class is used to wrap a standard cursor object so that use that
+* user defined methods can be called on the cursor
 * */
 package cjob.android.owendoyle.com.cjob.database;
 
@@ -8,13 +9,6 @@ import android.database.CursorWrapper;
 
 import cjob.android.owendoyle.com.cjob.events.Event;
 
-/**
- * Name: Owen Doyle
- * Student Number: 12453618
- * File: EventCursorWrapper.java
- *
- * This class makes it easy to get the data required from a cursor object
- */
 public class EventCursorWrapper extends CursorWrapper {
     public EventCursorWrapper(Cursor cursor){
         super(cursor);

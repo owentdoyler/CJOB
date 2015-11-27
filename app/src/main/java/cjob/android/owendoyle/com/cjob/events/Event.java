@@ -4,15 +4,6 @@
 
 package cjob.android.owendoyle.com.cjob.events;
 
-import java.util.UUID;
-
-/**
- * Name: Owen Doyle
- * Student Number: 12453618
- * File: Event.java
- *
- * This is a class to hold the information about an event
- */
 public class Event {
 
     private int id;

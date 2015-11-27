@@ -1,16 +1,13 @@
+/*
+* This class helps when creating the database and when accessing it
+*/
+
 package cjob.android.owendoyle.com.cjob.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-/**
- * Name: Owen Doyle
- * Student Number: 12453618
- * File: EventsDatabaseHelper.java
- *
- * This class manages creating and referencing to the database
- */
 public class EventsDatabaseHelper extends SQLiteOpenHelper {
     private static final int VERSION = 1;
     private static final String DATABASE_NAME = "EventsDatabase.db";

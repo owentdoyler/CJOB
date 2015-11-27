@@ -37,12 +37,6 @@ import cjob.android.owendoyle.com.cjob.database.EventsDatabaseHelper;
 import cjob.android.owendoyle.com.cjob.database.EventsDbSchema.EventsTable;
 import cjob.android.owendoyle.com.cjob.R;
 
-
-/**
- * File: EventManager.java.
- *
- * This class manages the events that are set.
- */
 public class EventManager {
     private static final String TAG = "EventManager";
 

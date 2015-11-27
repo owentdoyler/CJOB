@@ -1,16 +1,9 @@
 /*
-*
+* This is a class that defines constants that help to set the schema of the database
 * */
 
 package cjob.android.owendoyle.com.cjob.database;
 
-/**
- * Name: Owen Doyle
- * Student Number: 12453618
- * File: EventsDbSchema.java
- *
- * This class defines the schema of the database
- */
 public class EventsDbSchema {
     public static final class EventsTable{
         public static final String NAME = "events";

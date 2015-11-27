@@ -1,6 +1,4 @@
 /*
-* File: MapFragment
-*
 * This class is where the map view is set up and instantiated. This class also class deals with adding markers
 * to the map and loading any previous makers from the database that represent events.
 *

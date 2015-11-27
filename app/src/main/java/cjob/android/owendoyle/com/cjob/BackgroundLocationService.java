@@ -98,8 +98,8 @@ public class BackgroundLocationService extends Service implements GoogleApiClien
         return START_STICKY;
     }
 
+    //check if google play services are available on the device
     private boolean servicesAvailable(){
-        //check if google play services are available on the device
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
         return ConnectionResult.SUCCESS == resultCode;
     }

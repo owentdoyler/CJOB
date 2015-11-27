@@ -1,3 +1,7 @@
+/*
+* A basic activity that hosts the map fragment
+* */
+
 package cjob.android.owendoyle.com.cjob;
 
 import android.app.Dialog;
