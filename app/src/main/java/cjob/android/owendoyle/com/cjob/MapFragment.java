@@ -1,3 +1,11 @@
+/*
+* File: MapFragment
+*
+* This class is where the map view is set up and instantiated. This class also class deals with adding markers
+* to the map and loading any previous makers from the database that represent events.
+*
+* */
+
 package cjob.android.owendoyle.com.cjob;
 
 import android.content.Intent;
@@ -38,11 +46,7 @@ import cjob.android.owendoyle.com.cjob.database.EventsDbSchema;
 import cjob.android.owendoyle.com.cjob.events.Event;
 import cjob.android.owendoyle.com.cjob.events.EventManager;
 
-/**
- * Name: Owen Doyle
- * Student Number: 12453618
- * File: MapFragment.java
- */
+
 public class MapFragment extends SupportMapFragment {
     private static final String TAG = "MapFragment";
     private static final String PACKAGE = "cjob.android.owendoyle.com.cjob";
@@ -235,7 +239,7 @@ public class MapFragment extends SupportMapFragment {
         cursor.close();
     }
 
-    //this method gets the address for a specific location
+    //this method gets the textual address of a provided latitude and longitude coordinate
     private String getAddress(LatLng latLng){
         String address = "";
         Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
@@ -255,6 +259,7 @@ public class MapFragment extends SupportMapFragment {
         return address;
     }
 
+//    this method handles deleting an event from the database
     private void deleteEvent(int id){
         mDataBase.delete(EventsDbSchema.EventsTable.NAME, "_id = ?", new String[]{Integer.toString(id)});
         EventCursorWrapper cursor = eventManager.queryEvents(null, null);

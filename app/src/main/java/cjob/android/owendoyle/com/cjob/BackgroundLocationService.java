@@ -1,3 +1,13 @@
+/**
+ *
+ * This class is implements a a service that runs in the background and polls the location of the device
+ * the service also checks if there are any events set for the location the devices is in
+ *
+ * The basic layout of this code was based on the code described
+ * in the git gist repository: https://gist.github.com/blackcj/20efe2ac885c7297a676.
+ * I had to modify the code found in this gist to use the new googleApi location services
+ */
+
 package cjob.android.owendoyle.com.cjob;
 
 import android.app.Service;
@@ -20,17 +30,6 @@ import com.google.android.gms.maps.model.LatLng;
 
 import cjob.android.owendoyle.com.cjob.events.EventManager;
 
-/**
- * Name: Owen Doyle
- * Student Number: 12453618
- * File: BackgroundLocationService.java
- *
- * This class is a background service that constantly polls for location updates.
- *
- * The basic layout of this code was based on the code described
- * in the git gist repository: https://gist.github.com/blackcj/20efe2ac885c7297a676.
- * I had to modify the code found in this gist to use the new googleApi location services
- */
 public class BackgroundLocationService extends Service implements GoogleApiClient.OnConnectionFailedListener{
 
     private static final String TAG = "BkgroundLocationService";
